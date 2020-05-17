@@ -5,20 +5,16 @@ using System.Text;
 
 namespace GtirbSharp
 {
-    public sealed class DataBlock : Node
+    public sealed class DataBlock : Block
     {
-        private readonly GtirbSharp.proto.DataBlock protoDataBlock;
+        private readonly proto.DataBlock protoObj;
 
-        public ulong Size { get { return protoDataBlock.Size; } set { protoDataBlock.Size = value; } }
-        public ulong Offset { get; private set; }
-        public Guid ByteIntervalUuid { get; private set; }
-        internal DataBlock(GtirbSharp.proto.DataBlock protoDataBlock, ulong offset, Guid byteIntervalUuid)
+        public ulong Size { get { return protoObj.Size; } set { protoObj.Size = value; } }
+        internal DataBlock(proto.Block block) : base(block)
         {
-            this.protoDataBlock = protoDataBlock;
-            var myUuid = protoDataBlock.Uuid == null ? Guid.NewGuid() : Util.BigEndianByteArrayToGuid(protoDataBlock.Uuid);
+            this.protoObj = block.Data ?? throw new ArgumentException($"Block was not a {nameof(proto.DataBlock)}", nameof(block));
+            var myUuid = protoObj.Uuid == null ? Guid.NewGuid() : Util.BigEndianByteArrayToGuid(protoObj.Uuid);
             base.SetUuid(myUuid);
-            this.Offset = offset;
-            this.ByteIntervalUuid = byteIntervalUuid;
         }
     }
 }

@@ -5,21 +5,17 @@ using System.Text;
 
 namespace GtirbSharp
 {
-    public sealed class CodeBlock : Node
+    public sealed class CodeBlock : Block
     {
-        private readonly GtirbSharp.proto.CodeBlock protoCodeBlock;
+        private readonly proto.CodeBlock protoObj;
 
-        public ulong Size { get { return protoCodeBlock.Size; } set { protoCodeBlock.Size = value; } }
-        public ulong Offset { get; private set; }
-        public ulong DecodeMode { get { return protoCodeBlock.DecodeMode; } set { protoCodeBlock.DecodeMode = value; } }
-        public Guid ByteIntervalUuid { get; private set; }
-        internal CodeBlock(GtirbSharp.proto.CodeBlock protoCodeBlock, ulong offset, Guid byteIntervalUuid)
+        public ulong Size { get { return protoObj.Size; } set { protoObj.Size = value; } }
+        public ulong DecodeMode { get { return protoObj.DecodeMode; } set { protoObj.DecodeMode = value; } }
+        internal CodeBlock(proto.Block block) : base(block)
         {
-            this.protoCodeBlock = protoCodeBlock;
-            var myUuid = protoCodeBlock.Uuid == null? Guid.NewGuid() : Util.BigEndianByteArrayToGuid(protoCodeBlock.Uuid);
+            this.protoObj = block.Code ?? throw new ArgumentException($"Block was not a {nameof(proto.CodeBlock)}", nameof(block));
+            var myUuid = protoObj.Uuid == null ? Guid.NewGuid() : Util.BigEndianByteArrayToGuid(protoObj.Uuid);
             base.SetUuid(myUuid);
-            this.Offset = offset;
-            this.ByteIntervalUuid = byteIntervalUuid;
         }
     }
 }

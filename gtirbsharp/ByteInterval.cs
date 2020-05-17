@@ -83,7 +83,7 @@ namespace GtirbSharp
             this.protoByteInterval = protoByteInterval;
             var myUuid = protoByteInterval.Uuid == null ? Guid.NewGuid() : Util.BigEndianByteArrayToGuid(protoByteInterval.Uuid);
             base.SetUuid(myUuid);
-            this.Blocks = new ProtoList<Block, proto.Block>(protoByteInterval.Blocks, proto => new Block(proto, myUuid), block => block.protoBlock);
+            this.Blocks = new ProtoList<Block, proto.Block>(protoByteInterval.Blocks, proto => Block.FromProto(proto), block => block.protoBlock);
             this.SymbolicExpressions = new SymbolicExpressionDictionary(protoByteInterval.SymbolicExpressions);
         }
     }
