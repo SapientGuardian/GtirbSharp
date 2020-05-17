@@ -1,10 +1,14 @@
 ﻿#nullable enable
+using GtirbSharp.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace GtirbSharp
 {
+    /// <summary>
+    /// A CodeBlock represents a basic block in the binary.
+    /// </summary>
     public sealed class CodeBlock : Block
     {
         private readonly proto.CodeBlock protoObj;
@@ -14,7 +18,7 @@ namespace GtirbSharp
         internal CodeBlock(proto.Block block) : base(block)
         {
             this.protoObj = block.Code ?? throw new ArgumentException($"Block was not a {nameof(proto.CodeBlock)}", nameof(block));
-            var myUuid = protoObj.Uuid == null ? Guid.NewGuid() : Util.BigEndianByteArrayToGuid(protoObj.Uuid);
+            var myUuid = protoObj.Uuid == null ? Guid.NewGuid() : protoObj.Uuid.BigEndianByteArrayToGuid();
             base.SetUuid(myUuid);
         }
     }

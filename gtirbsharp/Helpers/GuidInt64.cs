@@ -7,7 +7,7 @@ namespace GtirbSharp.Helpers
 {
     // https://stackoverflow.com/questions/49372626/convert-guid-to-2-longs-and-2-longs-to-guid-in-c-sharp
     [StructLayout(LayoutKind.Explicit)]
-    struct GuidInt64
+    internal struct GuidInt64
     {
         [FieldOffset(0)]
         private Guid _guid;

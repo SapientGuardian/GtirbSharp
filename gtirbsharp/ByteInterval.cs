@@ -40,29 +40,29 @@ namespace GtirbSharp
             }
             set
             {
-                if (value != protoByteInterval.Size || Bytes == null || (int)value != Bytes.Length)
+                if (value != protoByteInterval.Size || Contents == null || (int)value != Contents.Length)
                 {
                     protoByteInterval.Size = value;
-                    if (Bytes == null)
+                    if (Contents == null)
                     {
-                        Bytes = new byte[(int)value];
+                        Contents = new byte[(int)value];
                     }
-                    else if ((int)value < Bytes.Length)
+                    else if ((int)value < Contents.Length)
                     {
-                        Bytes = Bytes.AsMemory().Slice(0, (int)value).ToArray();
+                        Contents = Contents.AsMemory().Slice(0, (int)value).ToArray();
                     }
                     else
                     {
                         var newBytes = new byte[(int)value];
-                        Array.Copy(Bytes, newBytes, Bytes.Length);
-                        Bytes = newBytes;
+                        Array.Copy(Contents, newBytes, Contents.Length);
+                        Contents = newBytes;
                     }
                 }
 
             }
         }
 
-        public byte[]? Bytes
+        public byte[]? Contents
         {
             get
             {
@@ -76,12 +76,11 @@ namespace GtirbSharp
         }
         public IList<Block> Blocks { get; private set; }
         public ICollection<SymbolicExpression> SymbolicExpressions { get; private set; }
-        // TODO: Parent section reference
 
         internal ByteInterval(proto.ByteInterval protoByteInterval)
         {
             this.protoByteInterval = protoByteInterval;
-            var myUuid = protoByteInterval.Uuid == null ? Guid.NewGuid() : Util.BigEndianByteArrayToGuid(protoByteInterval.Uuid);
+            var myUuid = protoByteInterval.Uuid == null ? Guid.NewGuid() : protoByteInterval.Uuid.BigEndianByteArrayToGuid();
             base.SetUuid(myUuid);
             this.Blocks = new ProtoList<Block, proto.Block>(protoByteInterval.Blocks, proto => Block.FromProto(proto), block => block.protoBlock);
             this.SymbolicExpressions = new SymbolicExpressionDictionary(protoByteInterval.SymbolicExpressions);

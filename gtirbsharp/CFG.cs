@@ -10,6 +10,9 @@ using GtirbSharp.DataStructures;
 
 namespace GtirbSharp
 {
+    /// <summary>
+    /// A CFG represents the interprocedural control flow graph.
+    /// </summary>
     public sealed class CFG
     {
         internal readonly Cfg protoCfg;
@@ -19,7 +22,7 @@ namespace GtirbSharp
         internal CFG(Cfg protoCfg)
         {
             this.protoCfg = protoCfg;
-            this.EdgeList = new ProtoList<Edge,proto.Edge>(protoCfg.Edges, proto => new Edge(proto), edge => edge.protoEdge);
+            this.EdgeList = new ProtoList<Edge, proto.Edge>(protoCfg.Edges, proto => new Edge(proto), edge => edge.protoEdge);
         }
     }
 }

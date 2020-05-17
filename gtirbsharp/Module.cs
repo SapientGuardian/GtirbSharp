@@ -10,6 +10,9 @@ using System.Text;
 
 namespace GtirbSharp
 {
+    /// <summary>
+    /// A Module represents a single binary (library or executable).
+    /// </summary>
     public sealed class Module : Node
     {
         internal readonly proto.Module protoModule;
@@ -28,7 +31,7 @@ namespace GtirbSharp
         public proto.FileFormat FileFormat { get { return protoModule.FileFormat; } set { protoModule.FileFormat = value; } }
         public proto.Isa ISA { get { return protoModule.Isa; } set { protoModule.Isa = value; } }
         public string? Name { get { return protoModule.Name; } set { protoModule.Name = value; } }
-        public Guid? EntryPointUuid { get { return protoModule.EntryPoint == null? (Guid?)null : Util.BigEndianByteArrayToGuid(protoModule.EntryPoint); } set { protoModule.EntryPoint = value == null? null : value.Value.ToBigEndian().ToByteArray(); } }
+        public Guid? EntryPointUuid { get { return protoModule.EntryPoint == null? (Guid?)null : protoModule.EntryPoint.BigEndianByteArrayToGuid(); } set { protoModule.EntryPoint = value == null? null : value.Value.ToBigEndian().ToByteArray(); } }
         public IList<Section> Sections { get; private set; }
         public IList<Symbol>? Symbols { get; private set; }
         public IList<ProxyBlock>? ProxyBlocks { get; private set; }
@@ -39,8 +42,7 @@ namespace GtirbSharp
                 var cb = GetByUuid(this.EntryPointUuid.Value);
                 return cb as CodeBlock;
             } 
-        }
-        // TODO: Parent IR reference
+        }        
         public AuxData AuxData { get; private set; }
 
         // AuxData schemas
@@ -89,7 +91,7 @@ namespace GtirbSharp
         internal Module(proto.Module protoModule)
         {
             this.protoModule = protoModule;
-            var myUuid = protoModule.Uuid == null? Guid.NewGuid() : Util.BigEndianByteArrayToGuid(protoModule.Uuid);
+            var myUuid = protoModule.Uuid == null? Guid.NewGuid() : protoModule.Uuid.BigEndianByteArrayToGuid();
             base.SetUuid(myUuid);
 
             Sections = new ProtoList<Section, proto.Section>(protoModule.Sections, proto => new Section(proto), section => section.protoSection);

@@ -11,6 +11,9 @@ using System.Text;
 
 namespace GtirbSharp
 {
+    /// <summary>
+    /// IR describes the internal representation of a software artifact.
+    /// </summary>
     public sealed class IR : Node
     {
         private proto.Ir protoIr;
@@ -28,9 +31,11 @@ namespace GtirbSharp
 
         public AuxData AuxData { get; private set; }
 
+        public uint ProtoVersion { get => protoIr.Version; set => protoIr.Version = value; }
+
         public IR()
         {
-            this.protoIr = new GtirbSharp.proto.Ir();
+            this.protoIr = new proto.Ir();
             var myUuid = Guid.NewGuid();
             base.SetUuid(myUuid);
             protoIr.Uuid = myUuid.ToBigEndian().ToByteArray();
@@ -54,12 +59,12 @@ namespace GtirbSharp
 
         private void Load(Stream source)
         {
-            this.protoIr = Serializer.Deserialize<GtirbSharp.proto.Ir>(source);
+            this.protoIr = Serializer.Deserialize<proto.Ir>(source);
             if (protoIr.Uuid != null)
             {
-                base.SetUuid(Util.BigEndianByteArrayToGuid(protoIr.Uuid));
+                base.SetUuid(protoIr.Uuid.BigEndianByteArrayToGuid());
             }
-            Modules = new ProtoList<Module, GtirbSharp.proto.Module>(protoIr.Modules, proto => new Module(proto), module => module.protoModule);
+            Modules = new ProtoList<Module, proto.Module>(protoIr.Modules, proto => new Module(proto), module => module.protoModule);
             this.Cfg = protoIr.Cfg == null ? null : new CFG(protoIr.Cfg);
             this.AuxData = new AuxData(protoIr.AuxDatas);
         }

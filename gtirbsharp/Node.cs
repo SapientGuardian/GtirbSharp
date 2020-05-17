@@ -10,7 +10,7 @@ namespace GtirbSharp
         private static Dictionary<Guid, WeakReference<Node>> uuid_cache = new Dictionary<Guid, WeakReference<Node>>();        
 
         public Guid UUID { get; private set; }
-        public Node()
+        internal Node() // It might be ok for something external to extend Node, but for now let's disallow it.
         {
             SetUuid(Guid.NewGuid());
         }

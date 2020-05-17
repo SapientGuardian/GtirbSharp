@@ -5,7 +5,7 @@ using System.Text;
 namespace GtirbSharp.Helpers
 {
     // https://stackoverflow.com/questions/5745512/how-to-read-a-net-guid-into-a-java-uuid
-    public static class GuidExtensions
+    internal static class GuidExtensions
     {
         /// <summary>
         /// A CLSCompliant method to convert a Java big-endian Guid to a .NET 
@@ -52,6 +52,21 @@ namespace GtirbSharp.Helpers
             java[6] = net[7];
             java[7] = net[6];
             return new Guid(java);
+        }
+
+        /// <summary>
+        /// Interprets a byte array as a GUID encoded as big-endian
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
+        public static Guid BigEndianByteArrayToGuid(this byte[]? bytes)
+        {            
+            if (bytes == null || bytes.Length != 16)
+            {
+                return Guid.Empty;
+            }
+
+            return new Guid(bytes).ToLittleEndian();
         }
     }
 }
