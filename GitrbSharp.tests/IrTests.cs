@@ -19,26 +19,27 @@ namespace gitrbsharp.tests
             }
         }
 
-        [Fact]
-        public void DeepCopy()
-        {
-            IR oldIR;
-            using (var fs = new FileStream(@"Resources\testIr.gtirb", FileMode.Open))
-            {
-                oldIR = IR.LoadFromStream(fs);                
-            }
+        //[Fact]
+        //public void DeepCopy()
+        //{
+        //    IR oldIR;
+        //    using (var fs = new FileStream(@"Resources\testIr.gtirb", FileMode.Open))
+        //    {
+        //        oldIR = IR.LoadFromStream(fs);                
+        //    }
 
-            var newIR = new IR();
+        //    var newIR = new IR();
 
-            newIR.ProtoVersion = oldIR.ProtoVersion;
+        //    newIR.ProtoVersion = oldIR.ProtoVersion;
 
-            var uuidTranslationTable = new Dictionary<Guid, Guid>(); // old -> new
+        //    var uuidTranslationTable = new Dictionary<Guid, Guid>(); // old -> new
 
-            foreach (var oldModule in oldIR.Modules)
-            {
-                var newModule = new Module();
-                uuidTranslationTable[oldModule.UUID] = newModule.UUID;
-            }
-        }
+        //    foreach (var oldModule in oldIR.Modules)
+        //    {
+        //        var newModule = new Module();
+        //        uuidTranslationTable[oldModule.UUID] = newModule.UUID;
+                
+        //    }
+        //}
     }
 }
