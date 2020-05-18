@@ -20,6 +20,13 @@ namespace GtirbSharp
             var myUuid = protoObj.Uuid == null ? Guid.NewGuid() : protoObj.Uuid.BigEndianByteArrayToGuid();
             base.SetUuid(myUuid);
         }
+
+        protected override Guid GetUuid() => protoObj.Uuid.BigEndianByteArrayToGuid();
+
+        protected override void SetUuidInternal(Guid uuid)
+        {
+            protoObj.Uuid = uuid.ToBigEndian().ToByteArray();
+        }
     }
 }
 #nullable restore

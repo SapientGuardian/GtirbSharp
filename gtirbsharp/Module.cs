@@ -15,7 +15,7 @@ namespace GtirbSharp
     /// </summary>
     public sealed class Module : Node
     {
-        internal readonly proto.Module protoModule;
+        internal readonly proto.Module protoObj;
         private readonly Lazy<IDictionary<Guid, ulong>> alignment;
         private readonly Lazy<IDictionary<Guid, string>> types;
         private readonly Lazy<IDictionary<Guid, Guid>> symbolForwarding;
@@ -25,13 +25,13 @@ namespace GtirbSharp
         private readonly Lazy<IDictionary<Guid, ObservableCollection<Guid>>> functionEntries;
         private readonly Lazy<IDictionary<Guid, Guid>> functionNames;
 
-        public string? BinaryPath { get { return protoModule.BinaryPath; } set { protoModule.BinaryPath = value; } }
-        public ulong PreferredAddr { get { return protoModule.PreferredAddr; } set { protoModule.PreferredAddr = value; } }
-        public long RebaseDelta { get { return protoModule.RebaseDelta; } set { protoModule.RebaseDelta = value; } }
-        public proto.FileFormat FileFormat { get { return protoModule.FileFormat; } set { protoModule.FileFormat = value; } }
-        public proto.Isa ISA { get { return protoModule.Isa; } set { protoModule.Isa = value; } }
-        public string? Name { get { return protoModule.Name; } set { protoModule.Name = value; } }
-        public Guid? EntryPointUuid { get { return protoModule.EntryPoint == null? (Guid?)null : protoModule.EntryPoint.BigEndianByteArrayToGuid(); } set { protoModule.EntryPoint = value == null? null : value.Value.ToBigEndian().ToByteArray(); } }
+        public string? BinaryPath { get { return protoObj.BinaryPath; } set { protoObj.BinaryPath = value; } }
+        public ulong PreferredAddr { get { return protoObj.PreferredAddr; } set { protoObj.PreferredAddr = value; } }
+        public long RebaseDelta { get { return protoObj.RebaseDelta; } set { protoObj.RebaseDelta = value; } }
+        public proto.FileFormat FileFormat { get { return protoObj.FileFormat; } set { protoObj.FileFormat = value; } }
+        public proto.Isa ISA { get { return protoObj.Isa; } set { protoObj.Isa = value; } }
+        public string? Name { get { return protoObj.Name; } set { protoObj.Name = value; } }
+        public Guid? EntryPointUuid { get { return protoObj.EntryPoint == null? (Guid?)null : protoObj.EntryPoint.BigEndianByteArrayToGuid(); } set { protoObj.EntryPoint = value == null? null : value.Value.ToBigEndian().ToByteArray(); } }
         public IList<Section> Sections { get; private set; }
         public IList<Symbol>? Symbols { get; private set; }
         public IList<ProxyBlock>? ProxyBlocks { get; private set; }
@@ -88,15 +88,19 @@ namespace GtirbSharp
         /// </summary>
         public IDictionary<Guid, Guid> FunctionNames => functionNames.Value;
 
+        public Module() : this(new proto.Module())
+        {
+
+        }
         internal Module(proto.Module protoModule)
         {
-            this.protoModule = protoModule;
+            this.protoObj = protoModule;
             var myUuid = protoModule.Uuid == null? Guid.NewGuid() : protoModule.Uuid.BigEndianByteArrayToGuid();
             base.SetUuid(myUuid);
 
-            Sections = new ProtoList<Section, proto.Section>(protoModule.Sections, proto => new Section(proto), section => section.protoSection);
-            Symbols = new ProtoList<Symbol, proto.Symbol>(protoModule.Symbols, proto => new Symbol(proto), symbol => symbol.protoSymbol);
-            ProxyBlocks = new ProtoList<ProxyBlock, proto.ProxyBlock>(protoModule.Proxies, proto => new ProxyBlock(proto), proxyBlock => proxyBlock.protoProxyBlock);
+            Sections = new ProtoList<Section, proto.Section>(protoModule.Sections, proto => new Section(proto), section => section.protoObj);
+            Symbols = new ProtoList<Symbol, proto.Symbol>(protoModule.Symbols, proto => new Symbol(proto), symbol => symbol.protoObj);
+            ProxyBlocks = new ProtoList<ProxyBlock, proto.ProxyBlock>(protoModule.Proxies, proto => new ProxyBlock(proto), proxyBlock => proxyBlock.protoObj);
             AuxData = new AuxData(protoModule.AuxDatas);
 
             alignment = new Lazy<IDictionary<Guid, ulong>>(AuxData.Alignment, true);
@@ -107,7 +111,14 @@ namespace GtirbSharp
             functionBlocks = new Lazy<IDictionary<Guid, ObservableCollection<Guid>>>(AuxData.FunctionBlocks, true);
             functionEntries = new Lazy<IDictionary<Guid, ObservableCollection<Guid>>>(AuxData.FunctionEntries, true);
             functionNames = new Lazy<IDictionary<Guid, Guid>>(AuxData.FunctionNames, true);
-        }          
+        }
+
+        protected override Guid GetUuid() => protoObj.Uuid.BigEndianByteArrayToGuid();
+
+        protected override void SetUuidInternal(Guid uuid)
+        {
+            protoObj.Uuid = uuid.ToBigEndian().ToByteArray();
+        }
     }
 }
 #nullable restore

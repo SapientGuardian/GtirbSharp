@@ -11,12 +11,18 @@ namespace GtirbSharp
     /// </summary>
     public sealed class ProxyBlock : Node
     {
-        internal readonly proto.ProxyBlock protoProxyBlock;
+        internal readonly proto.ProxyBlock protoObj;
 
         internal ProxyBlock(proto.ProxyBlock protoProxyBlock)
         {
             base.SetUuid(protoProxyBlock.Uuid == null? Guid.NewGuid() : protoProxyBlock.Uuid.BigEndianByteArrayToGuid());
-            this.protoProxyBlock = protoProxyBlock;
+            this.protoObj = protoProxyBlock;
+        }
+        protected override Guid GetUuid() => protoObj.Uuid.BigEndianByteArrayToGuid();
+
+        protected override void SetUuidInternal(Guid uuid)
+        {
+            protoObj.Uuid = uuid.ToBigEndian().ToByteArray();
         }
     }
 }

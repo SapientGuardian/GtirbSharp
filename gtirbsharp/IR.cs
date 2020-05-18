@@ -16,7 +16,7 @@ namespace GtirbSharp
     /// </summary>
     public sealed class IR : Node
     {
-        private proto.Ir protoIr;
+        private proto.Ir protoObj;
         private CFG? cfg;
 
         public IList<Module> Modules { get; private set; }
@@ -25,24 +25,23 @@ namespace GtirbSharp
             get => cfg;
             set
             {
-                cfg = value; protoIr.Cfg = value?.protoCfg;
+                cfg = value; protoObj.Cfg = value?.protoCfg;
             }
         }
 
         public AuxData AuxData { get; private set; }
 
-        public uint ProtoVersion { get => protoIr.Version; set => protoIr.Version = value; }
+        public uint ProtoVersion { get => protoObj.Version; set => protoObj.Version = value; }
 
         public IR()
         {
-            this.protoIr = new proto.Ir();
+            this.protoObj = new proto.Ir();
             var myUuid = Guid.NewGuid();
             base.SetUuid(myUuid);
-            protoIr.Uuid = myUuid.ToBigEndian().ToByteArray();
-            Modules = new ProtoList<Module, proto.Module>(this.protoIr.Modules, proto => new Module(proto), module => module.protoModule);
-            protoIr.Cfg = protoIr.Cfg ?? new proto.Cfg();
-            Cfg = new CFG(protoIr.Cfg);
-            AuxData = new AuxData(protoIr.AuxDatas);
+            Modules = new ProtoList<Module, proto.Module>(this.protoObj.Modules, proto => new Module(proto), module => module.protoObj);
+            protoObj.Cfg = protoObj.Cfg ?? new proto.Cfg();
+            Cfg = new CFG(protoObj.Cfg);
+            AuxData = new AuxData(protoObj.AuxDatas);
         }
 
         public static IR LoadFromStream(Stream source)
@@ -54,19 +53,24 @@ namespace GtirbSharp
 
         public void SaveToStream(Stream target)
         {
-            Serializer.Serialize(target, protoIr);
+            Serializer.Serialize(target, protoObj);
         }
 
         private void Load(Stream source)
         {
-            this.protoIr = Serializer.Deserialize<proto.Ir>(source);
-            if (protoIr.Uuid != null)
-            {
-                base.SetUuid(protoIr.Uuid.BigEndianByteArrayToGuid());
-            }
-            Modules = new ProtoList<Module, proto.Module>(protoIr.Modules, proto => new Module(proto), module => module.protoModule);
-            this.Cfg = protoIr.Cfg == null ? null : new CFG(protoIr.Cfg);
-            this.AuxData = new AuxData(protoIr.AuxDatas);
+            this.protoObj = Serializer.Deserialize<proto.Ir>(source);
+            var myUuid = protoObj.Uuid == null ? Guid.NewGuid() : protoObj.Uuid.BigEndianByteArrayToGuid();
+            base.SetUuid(myUuid);
+            Modules = new ProtoList<Module, proto.Module>(protoObj.Modules, proto => new Module(proto), module => module.protoObj);
+            this.Cfg = protoObj.Cfg == null ? null : new CFG(protoObj.Cfg);
+            this.AuxData = new AuxData(protoObj.AuxDatas);
+        }
+
+        protected override Guid GetUuid() => protoObj.Uuid.BigEndianByteArrayToGuid();
+
+        protected override void SetUuidInternal(Guid uuid)
+        {
+            protoObj.Uuid = uuid.ToBigEndian().ToByteArray();
         }
     }
 }

@@ -14,21 +14,21 @@ namespace GtirbSharp
     /// </summary>
     public sealed class ByteInterval : Node
     {
-        internal readonly GtirbSharp.proto.ByteInterval protoByteInterval;
+        internal readonly proto.ByteInterval protoObj;
 
         public ulong? Address
         {
-            get => protoByteInterval.HasAddress ? protoByteInterval.Address : (ulong?)null; set
+            get => protoObj.HasAddress ? protoObj.Address : (ulong?)null; set
             {
                 if (value.HasValue)
                 {
-                    protoByteInterval.Address = value.Value;
-                    protoByteInterval.HasAddress = true;
+                    protoObj.Address = value.Value;
+                    protoObj.HasAddress = true;
                 }
                 else
                 {
-                    protoByteInterval.Address = 0;
-                    protoByteInterval.HasAddress = false;
+                    protoObj.Address = 0;
+                    protoObj.HasAddress = false;
                 }
             }
         }
@@ -36,13 +36,13 @@ namespace GtirbSharp
         {
             get
             {
-                return protoByteInterval.Size;
+                return protoObj.Size;
             }
             set
             {
-                if (value != protoByteInterval.Size || Contents == null || (int)value != Contents.Length)
+                if (value != protoObj.Size || Contents == null || (int)value != Contents.Length)
                 {
-                    protoByteInterval.Size = value;
+                    protoObj.Size = value;
                     if (Contents == null)
                     {
                         Contents = new byte[(int)value];
@@ -66,12 +66,12 @@ namespace GtirbSharp
         {
             get
             {
-                return protoByteInterval.Contents;
+                return protoObj.Contents;
             }
             set
             {
-                protoByteInterval.Contents = value;
-                protoByteInterval.Size = value == null ? 0 : (ulong)value.Length;
+                protoObj.Contents = value;
+                protoObj.Size = value == null ? 0 : (ulong)value.Length;
             }
         }
         public IList<Block> Blocks { get; private set; }
@@ -79,11 +79,18 @@ namespace GtirbSharp
 
         internal ByteInterval(proto.ByteInterval protoByteInterval)
         {
-            this.protoByteInterval = protoByteInterval;
+            this.protoObj = protoByteInterval;
             var myUuid = protoByteInterval.Uuid == null ? Guid.NewGuid() : protoByteInterval.Uuid.BigEndianByteArrayToGuid();
             base.SetUuid(myUuid);
             this.Blocks = new ProtoList<Block, proto.Block>(protoByteInterval.Blocks, proto => Block.FromProto(proto), block => block.protoBlock);
             this.SymbolicExpressions = new SymbolicExpressionDictionary(protoByteInterval.SymbolicExpressions);
+        }
+
+        protected override Guid GetUuid() => protoObj.Uuid.BigEndianByteArrayToGuid();
+
+        protected override void SetUuidInternal(Guid uuid)
+        {
+            protoObj.Uuid = uuid.ToBigEndian().ToByteArray();
         }
     }
 }
