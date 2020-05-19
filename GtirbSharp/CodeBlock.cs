@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using gtirbsharp.Interfaces;
 using GtirbSharp.Helpers;
 using System;
 using System.Collections.Generic;
@@ -15,19 +16,17 @@ namespace GtirbSharp
 
         public ulong Size { get { return protoObj.Size; } set { protoObj.Size = value; } }
         public ulong DecodeMode { get { return protoObj.DecodeMode; } set { protoObj.DecodeMode = value; } }
-        internal CodeBlock(proto.Block block) : base(block)
+        public CodeBlock(INodeContext? nodeContext) : this(nodeContext, new proto.Block() { Code = new proto.CodeBlock { Uuid = Guid.NewGuid().ToBigEndian().ToByteArray() } } )
+        {
+
+        }
+        internal CodeBlock(INodeContext? nodeContext, proto.Block block) : base(block)
         {
             this.protoObj = block.Code ?? throw new ArgumentException($"Block was not a {nameof(proto.CodeBlock)}", nameof(block));
-            var myUuid = protoObj.Uuid == null ? Guid.NewGuid() : protoObj.Uuid.BigEndianByteArrayToGuid();
-            base.SetUuid(myUuid);
+            this.NodeContext = nodeContext;
         }
 
-        protected override Guid GetUuid() => protoObj.Uuid.BigEndianByteArrayToGuid();
-
-        protected override void SetUuidInternal(Guid uuid)
-        {
-            protoObj.Uuid = uuid.ToBigEndian().ToByteArray();
-        }
+        protected override Guid GetUuid() => protoObj.Uuid.BigEndianByteArrayToGuid();    
     }
 }
 #nullable restore

@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using gtirbsharp.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -18,11 +19,11 @@ namespace GtirbSharp
         {
             this.protoBlock = protoBlock;
         }
-
-        internal static Block FromProto(proto.Block protoBlock)
+        
+        internal static Block FromProto(INodeContext? nodeContext, proto.Block protoBlock)
         {
-            if (protoBlock.Code != null) return new CodeBlock(protoBlock);
-            if (protoBlock.Data != null) return new DataBlock(protoBlock);
+            if (protoBlock.Code != null) return new CodeBlock(nodeContext, protoBlock);
+            if (protoBlock.Data != null) return new DataBlock(nodeContext, protoBlock);
             throw new ArgumentException("Block was neither Code nor Data", nameof(protoBlock));
         }
     }

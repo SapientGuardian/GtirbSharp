@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using gtirbsharp.Interfaces;
 using GtirbSharp.DataStructures;
 using GtirbSharp.Helpers;
 using System;
@@ -15,6 +16,19 @@ namespace GtirbSharp
     public sealed class ByteInterval : Node
     {
         internal readonly proto.ByteInterval protoObj;
+        private Section? section;
+
+        public Section? Section { 
+            get => section;
+            set
+            {
+                section = value;
+                if (value?.NodeContext != null)
+                {
+                    NodeContext = value.NodeContext;
+                }
+            }
+        }
 
         public ulong? Address
         {
@@ -77,21 +91,19 @@ namespace GtirbSharp
         public IList<Block> Blocks { get; private set; }
         public ICollection<SymbolicExpression> SymbolicExpressions { get; private set; }
 
-        internal ByteInterval(proto.ByteInterval protoByteInterval)
+        public ByteInterval(Section? section) : this(section, section?.NodeContext, new proto.ByteInterval() { Uuid = Guid.NewGuid().ToBigEndian().ToByteArray() }) { }
+        public ByteInterval(INodeContext nodeContext) : this(null, nodeContext, new proto.ByteInterval() { Uuid = Guid.NewGuid().ToBigEndian().ToByteArray() }) { }
+        internal ByteInterval(Section? section, INodeContext? nodeContext, proto.ByteInterval protoByteInterval)
         {
             this.protoObj = protoByteInterval;
-            var myUuid = protoByteInterval.Uuid == null ? Guid.NewGuid() : protoByteInterval.Uuid.BigEndianByteArrayToGuid();
-            base.SetUuid(myUuid);
-            this.Blocks = new ProtoList<Block, proto.Block>(protoByteInterval.Blocks, proto => Block.FromProto(proto), block => block.protoBlock);
+            this.Section = section;
+            this.Blocks = new ProtoList<Block, proto.Block>(protoByteInterval.Blocks, proto => Block.FromProto(NodeContext, proto), block => block.protoBlock);
             this.SymbolicExpressions = new SymbolicExpressionDictionary(protoByteInterval.SymbolicExpressions);
+            this.NodeContext = nodeContext;
         }
 
         protected override Guid GetUuid() => protoObj.Uuid.BigEndianByteArrayToGuid();
 
-        protected override void SetUuidInternal(Guid uuid)
-        {
-            protoObj.Uuid = uuid.ToBigEndian().ToByteArray();
-        }
     }
 }
 #nullable disable

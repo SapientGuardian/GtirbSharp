@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using gtirbsharp.Interfaces;
 using GtirbSharp.Helpers;
 using System;
 using System.Collections.Generic;
@@ -12,18 +13,31 @@ namespace GtirbSharp
     public sealed class ProxyBlock : Node
     {
         internal readonly proto.ProxyBlock protoObj;
+        private Module? module;
 
-        internal ProxyBlock(proto.ProxyBlock protoProxyBlock)
+        public Module? Module
         {
-            base.SetUuid(protoProxyBlock.Uuid == null? Guid.NewGuid() : protoProxyBlock.Uuid.BigEndianByteArrayToGuid());
+            get => module; set
+            {
+                module = value;
+                if (value?.NodeContext != null)
+                {
+                    NodeContext = value.NodeContext;
+                }
+            }
+        }
+
+        public ProxyBlock(Module? module) : this(module, module?.NodeContext, new proto.ProxyBlock() { Uuid = Guid.NewGuid().ToBigEndian().ToByteArray() }) { }
+        public ProxyBlock(INodeContext nodeContext) : this(null, nodeContext, new proto.ProxyBlock() { Uuid = Guid.NewGuid().ToBigEndian().ToByteArray() }) { }
+        internal ProxyBlock(Module? module, INodeContext? nodeContext, proto.ProxyBlock protoProxyBlock)
+        {
             this.protoObj = protoProxyBlock;
+            this.Module = module;
+            this.NodeContext = nodeContext;
         }
         protected override Guid GetUuid() => protoObj.Uuid.BigEndianByteArrayToGuid();
 
-        protected override void SetUuidInternal(Guid uuid)
-        {
-            protoObj.Uuid = uuid.ToBigEndian().ToByteArray();
-        }
+
     }
 }
 #nullable restore

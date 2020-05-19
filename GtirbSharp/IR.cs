@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using gtirbsharp.Interfaces;
 using GtirbSharp.DataStructures;
 using GtirbSharp.Helpers;
 using ProtoBuf;
@@ -14,10 +15,11 @@ namespace GtirbSharp
     /// <summary>
     /// IR describes the internal representation of a software artifact.
     /// </summary>
-    public sealed class IR : Node
+    public sealed class IR : Node, INodeContext
     {
         private proto.Ir protoObj;
         private CFG? cfg;
+        private readonly Dictionary<Guid, WeakReference<Node>> uuidCache = new Dictionary<Guid, WeakReference<Node>>();
 
         public IList<Module> Modules { get; private set; }
         public CFG? Cfg
@@ -33,21 +35,27 @@ namespace GtirbSharp
 
         public uint ProtoVersion { get => protoObj.Version; set => protoObj.Version = value; }
 
-        public IR()
+        public IR() : this(new proto.Ir() { Uuid = Guid.NewGuid().ToBigEndian().ToByteArray() })
         {
-            this.protoObj = new proto.Ir();
-            var myUuid = Guid.NewGuid();
-            base.SetUuid(myUuid);
-            Modules = new ProtoList<Module, proto.Module>(this.protoObj.Modules, proto => new Module(proto), module => module.protoObj);
+            
+        }
+
+        private IR(proto.Ir protoObj)
+        {
+            this.protoObj = protoObj;
+            this.NodeContext = this;
+            Modules = new ProtoList<Module, proto.Module>(this.protoObj.Modules, proto => new Module(this, this.NodeContext, proto), module => module.protoObj);
             protoObj.Cfg = protoObj.Cfg ?? new proto.Cfg();
             Cfg = new CFG(protoObj.Cfg);
             AuxData = new AuxData(protoObj.AuxDatas);
+            
         }
 
         public static IR LoadFromStream(Stream source)
         {
-            var ir = new IR();
-            ir.Load(source);
+            var protoObj = Serializer.Deserialize<proto.Ir>(source);
+            var ir = new IR(protoObj);
+            
             return ir;
         }
 
@@ -56,21 +64,26 @@ namespace GtirbSharp
             Serializer.Serialize(target, protoObj);
         }
 
-        private void Load(Stream source)
-        {
-            this.protoObj = Serializer.Deserialize<proto.Ir>(source);
-            var myUuid = protoObj.Uuid == null ? Guid.NewGuid() : protoObj.Uuid.BigEndianByteArrayToGuid();
-            base.SetUuid(myUuid);
-            Modules = new ProtoList<Module, proto.Module>(protoObj.Modules, proto => new Module(proto), module => module.protoObj);
-            this.Cfg = protoObj.Cfg == null ? null : new CFG(protoObj.Cfg);
-            this.AuxData = new AuxData(protoObj.AuxDatas);
-        }
-
         protected override Guid GetUuid() => protoObj.Uuid.BigEndianByteArrayToGuid();
 
-        protected override void SetUuidInternal(Guid uuid)
+
+        void INodeContext.RegisterNode(Node node)
         {
-            protoObj.Uuid = uuid.ToBigEndian().ToByteArray();
+            uuidCache[node.UUID] = new WeakReference<Node>(node);
+        }
+
+        void INodeContext.DeregisterNode(Node node)
+        {
+            uuidCache.Remove(node.UUID);
+        }
+
+        public Node? GetByUuid(Guid uuid)
+        {
+            if (uuidCache.TryGetValue(uuid, out var weakReference) && weakReference.TryGetTarget(out var target))
+            {
+                return target;
+            }
+            return null;
         }
     }
 }
