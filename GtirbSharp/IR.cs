@@ -1,5 +1,5 @@
 ﻿#nullable enable
-using gtirbsharp.Interfaces;
+using GtirbSharp.Interfaces;
 using GtirbSharp.DataStructures;
 using Nito.Guids;
 using ProtoBuf;

@@ -7,7 +7,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using GtirbSharp.DataStructures;
-using gtirbsharp.Interfaces;
+using GtirbSharp.Interfaces;
 
 namespace GtirbSharp
 {

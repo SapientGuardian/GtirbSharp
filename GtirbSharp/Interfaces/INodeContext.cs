@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace gtirbsharp.Interfaces
+namespace GtirbSharp.Interfaces
 {
     /// <summary>
     /// Container for Nodes, providing lookup services

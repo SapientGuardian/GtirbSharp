@@ -1,5 +1,5 @@
 ﻿#nullable enable
-using gtirbsharp.Interfaces;
+using GtirbSharp.Interfaces;
 using Nito.Guids;
 using System;
 using System.Collections.Generic;
