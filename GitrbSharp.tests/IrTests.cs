@@ -24,7 +24,7 @@ namespace gitrbsharp.tests
         public void DeepCopy()
         {
             IR oldIR;
-            using (var fs = new FileStream(@"Resources\testIr.gtirb", FileMode.Open))
+            using (var fs = new FileStream(@"Resources\test1.gtirb", FileMode.Open))
             {
                 oldIR = IR.LoadFromStream(fs);
             }
@@ -112,6 +112,7 @@ namespace gitrbsharp.tests
                 foreach (var oldSymbol in oldModule.Symbols)
                 {
                     var newSymbol = new Symbol(newModule);
+                    uuidTranslationTable[oldSymbol.UUID] = newSymbol.UUID;
                     newSymbol.Name = oldSymbol.Name;
                     if (oldSymbol.ReferentUuid.HasValue)
                     {
@@ -169,15 +170,12 @@ namespace gitrbsharp.tests
                     newModule.Types.Remove(key);
                 }
 
-                // These keys don't seem to exist. Need to check if the gtirb file is bad, or we're screwing up the guids.
-                //oldKeys = newModule.SymbolForwarding.Keys.ToArray();
-                //foreach (var key in oldKeys)
-                //{
-                //    var oldkeynode = oldIR.GetByUuid(key);
-                //    var oldvaluenode = oldIR.GetByUuid(newModule.SymbolForwarding[key]);
-                //    newModule.SymbolForwarding[uuidTranslationTable[key]] = uuidTranslationTable[newModule.SymbolForwarding[key]];
-                //    newModule.SymbolForwarding.Remove(key);
-                //}
+                oldKeys = newModule.SymbolForwarding.Keys.ToArray();
+                foreach (var key in oldKeys)
+                {                    
+                    newModule.SymbolForwarding[uuidTranslationTable[key]] = uuidTranslationTable[newModule.SymbolForwarding[key]];
+                    newModule.SymbolForwarding.Remove(key);
+                }
 
                 oldKeys = newModule.FunctionNames.Keys.ToArray();
                 foreach (var key in oldKeys)
@@ -186,21 +184,27 @@ namespace gitrbsharp.tests
                     newModule.FunctionNames.Remove(key);
                 }
 
-                // These keys don't seem to exist. Need to check if the gtirb file is bad, or we're screwing up the guids.
-                //oldKeys = newModule.FunctionBlocks.Keys.ToArray();
-                //foreach (var key in oldKeys)
-                //{
-                //    newModule.FunctionBlocks[uuidTranslationTable[key]] = new System.Collections.ObjectModel.ObservableCollection<Guid>(newModule.FunctionBlocks[key].Select(oldId => uuidTranslationTable[oldId]));
-                //    newModule.FunctionBlocks.Remove(key);
-                //}
+                // These keys don't seem to exist.
+                oldKeys = newModule.FunctionBlocks.Keys.ToArray();
+                foreach (var key in oldKeys)
+                {
+                    if (uuidTranslationTable.ContainsKey(key))
+                    {
+                        newModule.FunctionBlocks[uuidTranslationTable[key]] = new System.Collections.ObjectModel.ObservableCollection<Guid>(newModule.FunctionBlocks[key].Select(oldId => uuidTranslationTable[oldId]));
+                        newModule.FunctionBlocks.Remove(key);
+                    }
+                }
 
-                // These keys don't seem to exist. Need to check if the gtirb file is bad, or we're screwing up the guids.
-                //oldKeys = newModule.FunctionEntries.Keys.ToArray();
-                //foreach (var key in oldKeys)
-                //{
-                //    newModule.FunctionEntries[uuidTranslationTable[key]] = new System.Collections.ObjectModel.ObservableCollection<Guid>(newModule.FunctionEntries[key].Select(oldId => uuidTranslationTable[oldId]));
-                //    newModule.FunctionEntries.Remove(key);
-                //}
+                // These keys don't seem to exist.
+                oldKeys = newModule.FunctionEntries.Keys.ToArray();
+                foreach (var key in oldKeys)
+                {
+                    if (uuidTranslationTable.ContainsKey(key))
+                    {
+                        newModule.FunctionEntries[uuidTranslationTable[key]] = new System.Collections.ObjectModel.ObservableCollection<Guid>(newModule.FunctionEntries[key].Select(oldId => uuidTranslationTable[oldId]));
+                        newModule.FunctionEntries.Remove(key);
+                    }
+                }
             }
 
 
