@@ -1,7 +1,7 @@
 ﻿#nullable enable
 using gtirbsharp.Interfaces;
 using GtirbSharp.DataStructures;
-using GtirbSharp.Helpers;
+using Nito.Guids;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -33,7 +33,7 @@ namespace GtirbSharp
         public proto.FileFormat FileFormat { get { return protoObj.FileFormat; } set { protoObj.FileFormat = value; } }
         public proto.Isa ISA { get { return protoObj.Isa; } set { protoObj.Isa = value; } }
         public string? Name { get { return protoObj.Name; } set { protoObj.Name = value; } }
-        public Guid? EntryPointUuid { get { return protoObj.EntryPoint == null ? (Guid?)null : protoObj.EntryPoint.BigEndianByteArrayToGuid(); } set { protoObj.EntryPoint = value == null ? null : value.Value.ToBigEndian().ToByteArray(); } }
+        public Guid? EntryPointUuid { get { return protoObj.EntryPoint == null ? (Guid?)null : GuidFactory.FromBigEndianByteArray(protoObj.EntryPoint); } set { protoObj.EntryPoint = value == null ? null : value.Value.ToBigEndianByteArray(); } }
         public IList<Section> Sections { get; private set; }
         public IList<Symbol>? Symbols { get; private set; }
         public IList<ProxyBlock>? ProxyBlocks { get; private set; }
@@ -91,13 +91,28 @@ namespace GtirbSharp
         /// </summary>
         public IDictionary<Guid, Guid> FunctionNames => functionNames.Value;
 
-        public IR? IR { get => ir; set { ir = value; NodeContext = ir?.NodeContext; } }
+        public IR? IR { 
+            get => ir; 
+            set 
+            {
+                if (value != ir)
+                {
+                    ir?.Modules.Remove(this);
+                    ir = value;
+                    NodeContext = value?.NodeContext;
+                    if (value?.Modules != null && !value.Modules.Contains(this))
+                    {
+                        value.Modules.Add(this);
+                    }
+                }
+            } 
+        }
 
-        public Module(IR? ir) : this(ir, ir?.NodeContext, new proto.Module() { Uuid = Guid.NewGuid().ToBigEndian().ToByteArray() })
+        public Module(IR? ir) : this(ir, ir?.NodeContext, new proto.Module() { Uuid = Guid.NewGuid().ToBigEndianByteArray() })
         {
 
         }
-        public Module(INodeContext? nodeContext) : this(null, nodeContext, new proto.Module() { Uuid = Guid.NewGuid().ToBigEndian().ToByteArray() })
+        public Module(INodeContext? nodeContext) : this(null, nodeContext, new proto.Module() { Uuid = Guid.NewGuid().ToBigEndianByteArray() })
         {
 
         }
@@ -122,7 +137,7 @@ namespace GtirbSharp
             this.NodeContext = nodeContext;
         }
 
-        protected override Guid GetUuid() => protoObj.Uuid.BigEndianByteArrayToGuid();
+        protected override Guid GetUuid() => GuidFactory.FromBigEndianByteArray(protoObj.Uuid);
     }
 }
 #nullable restore

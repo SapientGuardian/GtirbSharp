@@ -1,6 +1,6 @@
 ﻿#nullable enable
 using gtirbsharp.Interfaces;
-using GtirbSharp.Helpers;
+using Nito.Guids;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -17,26 +17,67 @@ namespace GtirbSharp
 
         public Module? Module
         {
-            get => module; 
-            set
+            get => module; set
             {
-                module = value;
-                if (value?.NodeContext != null)
+                if (value != module)
                 {
-                    NodeContext = value.NodeContext;
+                    module?.Symbols?.Remove(this);
+                    module = value;
+                    if (value?.NodeContext != null)
+                    {
+                        NodeContext = value.NodeContext;
+                    }
+                    if (value?.Symbols != null && !value.Symbols.Contains(this))
+                    {
+                        value.Symbols.Add(this);
+                    }
                 }
             }
         }
+
         public string Name { get { return protoObj.Name; } set { protoObj.Name = value ?? string.Empty; } }
-        public Node? ReferentUuid => ReferentByUuid.HasValue ? NodeContext?.GetByUuid(ReferentByUuid.Value) : null;
-        public Guid? ReferentByUuid => protoObj.ReferentUuid == null ? (Guid?)null : protoObj.ReferentUuid.BigEndianByteArrayToGuid();
-        public ulong Value => protoObj.Value;
-        public bool HasValue => !HasReferent;
-        public bool HasReferent => protoObj.ReferentUuid != default;
+        public Guid? ReferentUuid
+        {
+            get
+            {
+                return protoObj.ShouldSerializeReferentUuid() && protoObj.ReferentUuid != null ? GuidFactory.FromBigEndianByteArray(protoObj.ReferentUuid) : (Guid?)null;
+            }
+            set
+            {
+                if (value.HasValue)
+                {
+                    protoObj.ReferentUuid = value.Value.ToBigEndianByteArray();
+                }
+                else
+                {
+                    protoObj.ResetReferentUuid();
+                }
+
+            }
+            
+        }        
+        public ulong? Value 
+        {
+            get
+            {
+                return protoObj.ShouldSerializeValue() ? protoObj.Value : (ulong?)null;
+            }
+            set
+            {
+                if (value.HasValue)
+                {
+                    protoObj.Value = value.Value;
+                }
+                else
+                {
+                    protoObj.ResetValue();
+                }
+            }
+        }
 
 
-        public Symbol(Module? module) : this(module, module?.NodeContext, new proto.Symbol() { Uuid = Guid.NewGuid().ToBigEndian().ToByteArray() }) { }
-        public Symbol(INodeContext nodeContext) : this(null, nodeContext, new proto.Symbol() { Uuid = Guid.NewGuid().ToBigEndian().ToByteArray() }) { }
+        public Symbol(Module? module) : this(module, module?.NodeContext, new proto.Symbol() { Uuid = Guid.NewGuid().ToBigEndianByteArray() }) { }
+        public Symbol(INodeContext nodeContext) : this(null, nodeContext, new proto.Symbol() { Uuid = Guid.NewGuid().ToBigEndianByteArray() }) { }
         internal Symbol(Module? module, INodeContext? nodeContext, proto.Symbol protoSymbol)
         {
             this.protoObj = protoSymbol;
@@ -44,7 +85,7 @@ namespace GtirbSharp
             this.NodeContext = nodeContext;
         }
 
-        protected override Guid GetUuid() => protoObj.Uuid.BigEndianByteArrayToGuid();
+        protected override Guid GetUuid() => GuidFactory.FromBigEndianByteArray(protoObj.Uuid);
     }
 }
 #nullable restore

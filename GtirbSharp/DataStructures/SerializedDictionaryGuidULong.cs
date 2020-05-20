@@ -1,4 +1,4 @@
-﻿using GtirbSharp.Helpers;
+﻿using Nito.Guids;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -25,7 +25,7 @@ namespace GtirbSharp.DataStructures
                 bw.Write((ulong)innerDictionary.Count);
                 foreach (var kvp in innerDictionary)
                 {
-                    bw.Write(kvp.Key.ToBigEndian().ToByteArray());
+                    bw.Write(kvp.Key.ToBigEndianByteArray());
                     bw.Write(kvp.Value);
                 }
             }

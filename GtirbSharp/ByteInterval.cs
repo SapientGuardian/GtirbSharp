@@ -1,7 +1,7 @@
 ﻿#nullable enable
 using gtirbsharp.Interfaces;
 using GtirbSharp.DataStructures;
-using GtirbSharp.Helpers;
+using Nito.Guids;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -22,10 +22,18 @@ namespace GtirbSharp
             get => section;
             set
             {
-                section = value;
-                if (value?.NodeContext != null)
+                if (value != section)
                 {
-                    NodeContext = value.NodeContext;
+                    section?.ByteIntervals?.Remove(this);
+                    section = value;
+                    if (value?.NodeContext != null)
+                    {
+                        NodeContext = value.NodeContext;
+                    }
+                    if (value?.ByteIntervals != null && !value.ByteIntervals.Contains(this))
+                    {
+                        value.ByteIntervals.Add(this);
+                    }
                 }
             }
         }
@@ -91,18 +99,18 @@ namespace GtirbSharp
         public IList<Block> Blocks { get; private set; }
         public ICollection<SymbolicExpression> SymbolicExpressions { get; private set; }
 
-        public ByteInterval(Section? section) : this(section, section?.NodeContext, new proto.ByteInterval() { Uuid = Guid.NewGuid().ToBigEndian().ToByteArray() }) { }
-        public ByteInterval(INodeContext nodeContext) : this(null, nodeContext, new proto.ByteInterval() { Uuid = Guid.NewGuid().ToBigEndian().ToByteArray() }) { }
+        public ByteInterval(Section? section) : this(section, section?.NodeContext, new proto.ByteInterval() { Uuid = Guid.NewGuid().ToBigEndianByteArray() }) { }
+        public ByteInterval(INodeContext nodeContext) : this(null, nodeContext, new proto.ByteInterval() { Uuid = Guid.NewGuid().ToBigEndianByteArray() }) { }
         internal ByteInterval(Section? section, INodeContext? nodeContext, proto.ByteInterval protoByteInterval)
         {
             this.protoObj = protoByteInterval;
             this.Section = section;
-            this.Blocks = new ProtoList<Block, proto.Block>(protoByteInterval.Blocks, proto => Block.FromProto(NodeContext, proto), block => block.protoBlock);
+            this.Blocks = new ProtoList<Block, proto.Block>(protoByteInterval.Blocks, proto => Block.FromProto(this, NodeContext, proto), block => block.protoBlock);
             this.SymbolicExpressions = new SymbolicExpressionDictionary(protoByteInterval.SymbolicExpressions);
             this.NodeContext = nodeContext;
         }
 
-        protected override Guid GetUuid() => protoObj.Uuid.BigEndianByteArrayToGuid();
+        protected override Guid GetUuid() => GuidFactory.FromBigEndianByteArray(protoObj.Uuid);
 
     }
 }

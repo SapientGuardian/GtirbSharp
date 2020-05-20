@@ -13,17 +13,17 @@ namespace GtirbSharp
     {
         internal readonly proto.Block protoBlock;
 
-        public ulong Offset { get => protoBlock.Offset; set => protoBlock.Offset = value; }
-        public Guid? ByteIntervalUuid { get; set; }
+        public ulong Offset { get => protoBlock.Offset; set => protoBlock.Offset = value; }       
+
         internal Block(proto.Block protoBlock)
         {
             this.protoBlock = protoBlock;
         }
         
-        internal static Block FromProto(INodeContext? nodeContext, proto.Block protoBlock)
+        internal static Block FromProto(ByteInterval? byteInterval, INodeContext? nodeContext, proto.Block protoBlock)
         {
-            if (protoBlock.Code != null) return new CodeBlock(nodeContext, protoBlock);
-            if (protoBlock.Data != null) return new DataBlock(nodeContext, protoBlock);
+            if (protoBlock.Code != null) return new CodeBlock(byteInterval, nodeContext, protoBlock);
+            if (protoBlock.Data != null) return new DataBlock(byteInterval, nodeContext, protoBlock);
             throw new ArgumentException("Block was neither Code nor Data", nameof(protoBlock));
         }
     }

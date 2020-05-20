@@ -1,4 +1,4 @@
-﻿using GtirbSharp.Helpers;
+﻿using Nito.Guids;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -25,7 +25,7 @@ namespace GtirbSharp.DataStructures
                 bw.Write((long)innerDictionary.Count);
                 foreach (var kvp in innerDictionary)
                 {
-                    bw.Write(kvp.Key.ElementId.ToBigEndian().ToByteArray());
+                    bw.Write(kvp.Key.ElementId.ToBigEndianByteArray());
                     bw.Write(kvp.Key.Displacement);
 
                     bw.Write((byte)kvp.Value.Count);
@@ -38,7 +38,7 @@ namespace GtirbSharp.DataStructures
                         {
                             bw.Write(directiveValue);
                         }
-                        bw.Write(directive.DirectiveUuid.ToBigEndian().ToByteArray());
+                        bw.Write(directive.DirectiveUuid.ToBigEndianByteArray());
                     }
                 }
             }

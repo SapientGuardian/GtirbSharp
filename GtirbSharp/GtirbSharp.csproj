@@ -9,6 +9,7 @@
   
   <ItemGroup>
     <!--<PackageReference Include="protobuf-net.MSBuild" Version="2.3.17" />-->
+    <PackageReference Include="Nito.Guids" Version="1.0.0" />
     <PackageReference Include="protobuf-net" Version="2.4.6" />
     <PackageReference Include="System.Collections.Immutable" Version="1.7.1" />
   </ItemGroup>

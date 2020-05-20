@@ -13,12 +13,12 @@ namespace GtirbSharp.DataStructures
         public SerializedDictionary(Action<byte[]> setData, IEnumerable<KeyValuePair<TKey, TValue>> initialContents)
         {
             innerDictionary = new Dictionary<TKey, TValue>();
+            this.setData = setData;
+
             foreach (var item in initialContents)
             {
                 innerDictionary[item.Key] = item.Value;
-            }
-
-            this.setData = setData;
+            }            
         }
 
         public virtual TValue this[TKey key]

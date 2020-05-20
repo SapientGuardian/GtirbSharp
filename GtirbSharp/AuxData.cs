@@ -1,6 +1,6 @@
 ﻿#nullable enable
 using GtirbSharp.DataStructures;
-using GtirbSharp.Helpers;
+using Nito.Guids;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;

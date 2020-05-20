@@ -1,6 +1,6 @@
 ﻿#nullable enable
 using gtirbsharp.Interfaces;
-using GtirbSharp.Helpers;
+using Nito.Guids;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -19,23 +19,31 @@ namespace GtirbSharp
         {
             get => module; set
             {
-                module = value;
-                if (value?.NodeContext != null)
+                if (value != module)
                 {
-                    NodeContext = value.NodeContext;
+                    module?.ProxyBlocks?.Remove(this);
+                    module = value;
+                    if (value?.NodeContext != null)
+                    {
+                        NodeContext = value.NodeContext;
+                    }
+                    if (value?.ProxyBlocks != null && !value.ProxyBlocks.Contains(this))
+                    {
+                        value.ProxyBlocks.Add(this);
+                    }
                 }
             }
         }
 
-        public ProxyBlock(Module? module) : this(module, module?.NodeContext, new proto.ProxyBlock() { Uuid = Guid.NewGuid().ToBigEndian().ToByteArray() }) { }
-        public ProxyBlock(INodeContext nodeContext) : this(null, nodeContext, new proto.ProxyBlock() { Uuid = Guid.NewGuid().ToBigEndian().ToByteArray() }) { }
+        public ProxyBlock(Module? module) : this(module, module?.NodeContext, new proto.ProxyBlock() { Uuid = Guid.NewGuid().ToBigEndianByteArray() }) { }
+        public ProxyBlock(INodeContext nodeContext) : this(null, nodeContext, new proto.ProxyBlock() { Uuid = Guid.NewGuid().ToBigEndianByteArray() }) { }
         internal ProxyBlock(Module? module, INodeContext? nodeContext, proto.ProxyBlock protoProxyBlock)
         {
             this.protoObj = protoProxyBlock;
             this.Module = module;
             this.NodeContext = nodeContext;
         }
-        protected override Guid GetUuid() => protoObj.Uuid.BigEndianByteArrayToGuid();
+        protected override Guid GetUuid() => GuidFactory.FromBigEndianByteArray(protoObj.Uuid);
 
 
     }

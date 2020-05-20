@@ -1,6 +1,6 @@
 ﻿#nullable enable
 using GtirbSharp.proto;
-using GtirbSharp.Helpers;
+using Nito.Guids;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -23,10 +23,18 @@ namespace GtirbSharp
         {
             get => module; set
             {
-                module = value;
-                if (value?.NodeContext != null)
+                if (value != module)
                 {
-                    NodeContext = value.NodeContext;
+                    module?.Sections?.Remove(this);
+                    module = value;
+                    if (value?.NodeContext != null)
+                    {
+                        NodeContext = value.NodeContext;
+                    }
+                    if (value?.Sections != null && !value.Sections.Contains(this))
+                    {
+                        value.Sections.Add(this);
+                    }
                 }
             }
         }
@@ -34,8 +42,8 @@ namespace GtirbSharp
         public string Name { get { return protoObj.Name; } set { protoObj.Name = value; } }
         public IList<ByteInterval> ByteIntervals { get; private set; }
         public List<SectionFlag> SectionFlags => protoObj.SectionFlags;
-        public Section(Module? module) : this(module, module?.NodeContext, new proto.Section() { Uuid = Guid.NewGuid().ToBigEndian().ToByteArray() }) { }
-        public Section(INodeContext nodeContext) : this(null, nodeContext, new proto.Section() { Uuid = Guid.NewGuid().ToBigEndian().ToByteArray() }) { }
+        public Section(Module? module) : this(module, module?.NodeContext, new proto.Section() { Uuid = Guid.NewGuid().ToBigEndianByteArray() }) { }
+        public Section(INodeContext nodeContext) : this(null, nodeContext, new proto.Section() { Uuid = Guid.NewGuid().ToBigEndianByteArray() }) { }
         internal Section(Module? module, INodeContext? nodeContext, proto.Section protoSection)
         {
             this.protoObj = protoSection;
@@ -44,7 +52,7 @@ namespace GtirbSharp
             this.NodeContext = nodeContext;
         }
 
-        protected override Guid GetUuid() => protoObj.Uuid.BigEndianByteArrayToGuid();
+        protected override Guid GetUuid() => GuidFactory.FromBigEndianByteArray(protoObj.Uuid);
     }
 }
 #nullable restore

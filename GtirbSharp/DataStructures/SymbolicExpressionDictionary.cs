@@ -74,11 +74,11 @@ namespace GtirbSharp.DataStructures
 
         private IEnumerable<SymbolicExpression> Enumerable()
         {
-            return protoDict.Values.Select(protoExp =>
+            return protoDict.Select(kvp =>
             {
-                if (protoExp.AddrAddr != null) return new SymAddrAddr(protoExp.AddrAddr) as SymbolicExpression;
-                if (protoExp.AddrConst != null) return new SymAddrConst(protoExp.AddrConst) as SymbolicExpression;
-                if (protoExp.StackConst != null) return new SymStackConst(protoExp.StackConst) as SymbolicExpression;
+                if (kvp.Value.AddrAddr != null) return new SymAddrAddr(kvp.Value.AddrAddr) { Offset = kvp.Key } as SymbolicExpression;
+                if (kvp.Value.AddrConst != null) return new SymAddrConst(kvp.Value.AddrConst) { Offset = kvp.Key } as SymbolicExpression;
+                if (kvp.Value.StackConst != null) return new SymStackConst(kvp.Value.StackConst) { Offset = kvp.Key } as SymbolicExpression;
                 return null as SymbolicExpression;
             }).Where(s => s != null).Select(s => (s!));
         }

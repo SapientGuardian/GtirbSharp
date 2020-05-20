@@ -1,4 +1,4 @@
-﻿using GtirbSharp.Helpers;
+﻿using Nito.Guids;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,7 +14,7 @@ namespace GtirbSharp
 
         protected override ulong GetOffset() => (ulong)protoObj.Offset;
         protected override void SetOffset(ulong oldValue, ulong newValue) { protoObj.Offset = (int)newValue; base.SetOffset(oldValue, newValue); }
-        public Guid? SymbolUuid { get => protoObj.SymbolUuid == null? (Guid?)null : protoObj.SymbolUuid.BigEndianByteArrayToGuid(); set => protoObj.SymbolUuid = value == null? null : value.Value.ToBigEndian().ToByteArray(); }
+        public Guid? SymbolUuid { get => protoObj.SymbolUuid == null? (Guid?)null : GuidFactory.FromBigEndianByteArray(protoObj.SymbolUuid); set => protoObj.SymbolUuid = value == null? null : value.Value.ToBigEndianByteArray(); }
 
         internal SymStackConst(proto.SymStackConst protoObj)
         {

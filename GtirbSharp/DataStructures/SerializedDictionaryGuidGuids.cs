@@ -1,4 +1,4 @@
-﻿using GtirbSharp.Helpers;
+﻿using Nito.Guids;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,7 +11,7 @@ namespace GtirbSharp.DataStructures
     internal class SerializedDictionaryGuidGuids : SerializedDictionaryTObservable<Guid, Guid>
     {
         public SerializedDictionaryGuidGuids(Action<byte[]> setData, IEnumerable<KeyValuePair<Guid, ObservableCollection<Guid>>> initialContents) : base(setData, initialContents)
-        {           
+        {
         }
         public SerializedDictionaryGuidGuids(Action<byte[]> setData) : base(setData, Enumerable.Empty<KeyValuePair<Guid, ObservableCollection<Guid>>>())
         {
@@ -25,12 +25,12 @@ namespace GtirbSharp.DataStructures
                 bw.Write((long)innerDictionary.Count);
                 foreach (var kvp in innerDictionary)
                 {
-                    bw.Write(kvp.Key.ToBigEndian().ToByteArray());
+                    bw.Write(kvp.Key.ToBigEndianByteArray());
                     bw.Write((byte)kvp.Value.Count);
                     for (int i = 1; i < 8; i++)
                         bw.Write((byte)0);
                     foreach (var guid in kvp.Value)
-                        bw.Write(guid.ToBigEndian().ToByteArray());
+                        bw.Write(guid.ToBigEndianByteArray());
                 }
             }
             setData(ms.ToArray());

@@ -18,5 +18,6 @@ namespace gtirbsharp.Interfaces
         /// <param name="uuid">UUID of the node to retrieve</param>
         /// <returns>The Node if found, or null if not</returns>
         public Node? GetByUuid(Guid uuid);
+        public int NodeCount();
     }
 }

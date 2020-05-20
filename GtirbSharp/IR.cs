@@ -1,7 +1,7 @@
 ﻿#nullable enable
 using gtirbsharp.Interfaces;
 using GtirbSharp.DataStructures;
-using GtirbSharp.Helpers;
+using Nito.Guids;
 using ProtoBuf;
 using System;
 using System.Collections.Generic;
@@ -35,7 +35,7 @@ namespace GtirbSharp
 
         public uint ProtoVersion { get => protoObj.Version; set => protoObj.Version = value; }
 
-        public IR() : this(new proto.Ir() { Uuid = Guid.NewGuid().ToBigEndian().ToByteArray() })
+        public IR() : this(new proto.Ir() { Uuid = Guid.NewGuid().ToBigEndianByteArray() })
         {
             
         }
@@ -64,7 +64,7 @@ namespace GtirbSharp
             Serializer.Serialize(target, protoObj);
         }
 
-        protected override Guid GetUuid() => protoObj.Uuid.BigEndianByteArrayToGuid();
+        protected override Guid GetUuid() => GuidFactory.FromBigEndianByteArray(protoObj.Uuid);
 
 
         void INodeContext.RegisterNode(Node node)
@@ -84,6 +84,11 @@ namespace GtirbSharp
                 return target;
             }
             return null;
+        }
+
+        public int NodeCount()
+        {
+            return uuidCache.Count;
         }
     }
 }

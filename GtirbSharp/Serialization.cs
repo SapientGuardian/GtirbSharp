@@ -1,5 +1,5 @@
 ﻿#nullable enable
-using GtirbSharp.Helpers;
+using Nito.Guids;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -110,10 +110,12 @@ namespace GtirbSharp
         }
 
         public Guid GetUuid()
-        {            
-            long longA = this.GetByteSwappedLong();
-            long longB = this.GetByteSwappedLong();
-            return new GuidInt64(longA, longB).Guid.ToLittleEndian();
+        {
+            Remaining -= 16;
+            return GuidFactory.FromBigEndianByteArray(bb.ReadBytes(16));
+            //long longA = this.GetByteSwappedLong();
+            //long longB = this.GetByteSwappedLong();
+            //return new GuidInt64(longA, longB).Guid.ToLittleEndian();
         }
 
         private long GetByteSwappedLong()
