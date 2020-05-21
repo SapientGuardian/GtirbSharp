@@ -55,7 +55,7 @@ namespace GtirbSharp
         {
             this.protoObj = block.Code ?? throw new ArgumentException($"Block was not a {nameof(proto.CodeBlock)}", nameof(block));
             this.NodeContext = nodeContext;
-            this.ByteInterval = ByteInterval;
+            this.ByteInterval = byteInterval;
         }
 
         protected override Guid GetUuid() => GuidFactory.FromBigEndianByteArray(protoObj.Uuid);
