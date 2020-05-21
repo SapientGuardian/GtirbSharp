@@ -35,6 +35,9 @@ namespace GtirbSharp
             }
         }
 
+        /// <summary>
+        /// The name of this symbol.
+        /// </summary>
         public string Name { get { return protoObj.Name; } set { protoObj.Name = value ?? string.Empty; } }
         public Guid? ReferentUuid
         {
@@ -74,6 +77,11 @@ namespace GtirbSharp
                 }
             }
         }
+
+        /// <summary>
+        /// True if this symbol is at the end of its referent, rather than at the beginning.Has no meaning for integral symbols
+        /// </summary>
+        public bool AtEnd { get => protoObj.AtEnd; set => protoObj.AtEnd = value; }
 
 
         public Symbol(Module? module) : this(module, module?.NodeContext, new proto.Symbol() { Uuid = Guid.NewGuid().ToBigEndianByteArray() }) { }
