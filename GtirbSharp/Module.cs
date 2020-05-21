@@ -30,8 +30,8 @@ namespace GtirbSharp
         public string? BinaryPath { get { return protoObj.BinaryPath; } set { protoObj.BinaryPath = value; } }
         public ulong PreferredAddr { get { return protoObj.PreferredAddr; } set { protoObj.PreferredAddr = value; } }
         public long RebaseDelta { get { return protoObj.RebaseDelta; } set { protoObj.RebaseDelta = value; } }
-        public proto.FileFormat FileFormat { get { return protoObj.FileFormat; } set { protoObj.FileFormat = value; } }
-        public proto.Isa ISA { get { return protoObj.Isa; } set { protoObj.Isa = value; } }
+        public FileFormat FileFormat { get { return (FileFormat)protoObj.FileFormat; } set { protoObj.FileFormat = (proto.FileFormat)value; } }
+        public Isa ISA { get { return (Isa)protoObj.Isa; } set { protoObj.Isa = (proto.Isa)value; } }
         public string? Name { get { return protoObj.Name; } set { protoObj.Name = value; } }
         public Guid? EntryPointUuid { get { return protoObj.EntryPoint == null ? (Guid?)null : GuidFactory.FromBigEndianByteArray(protoObj.EntryPoint); } set { protoObj.EntryPoint = value == null ? null : value.Value.ToBigEndianByteArray(); } }
         public IList<Section> Sections { get; private set; }

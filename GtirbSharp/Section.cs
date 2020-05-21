@@ -41,7 +41,7 @@ namespace GtirbSharp
 
         public string Name { get { return protoObj.Name; } set { protoObj.Name = value; } }
         public IList<ByteInterval> ByteIntervals { get; private set; }
-        public List<SectionFlag> SectionFlags => protoObj.SectionFlags;
+        public IList<SectionFlag> SectionFlags { get; private set; }
         public Section(Module? module) : this(module, module?.NodeContext, new proto.Section() { Uuid = Guid.NewGuid().ToBigEndianByteArray() }) { }
         public Section(INodeContext nodeContext) : this(null, nodeContext, new proto.Section() { Uuid = Guid.NewGuid().ToBigEndianByteArray() }) { }
         internal Section(Module? module, INodeContext? nodeContext, proto.Section protoSection)
@@ -49,6 +49,7 @@ namespace GtirbSharp
             this.protoObj = protoSection;
             this.Module = module;
             this.ByteIntervals = new ProtoList<ByteInterval, proto.ByteInterval>(protoSection.ByteIntervals, proto => new ByteInterval(this, NodeContext, proto), byteInterval => byteInterval.protoObj);
+            this.SectionFlags = new ProtoList<SectionFlag, proto.SectionFlag>(protoObj.SectionFlags, proto => (SectionFlag)proto, friendly => (proto.SectionFlag)friendly);
             this.NodeContext = nodeContext;
         }
 

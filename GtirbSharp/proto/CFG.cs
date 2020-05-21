@@ -58,7 +58,7 @@ namespace GtirbSharp.proto
     }
 
     [global::ProtoBuf.ProtoContract()]
-    public enum EdgeType
+    internal enum EdgeType
     {
         [global::ProtoBuf.ProtoEnum(Name = @"Type_Branch")]
         TypeBranch = 0,

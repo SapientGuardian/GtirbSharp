@@ -15,7 +15,7 @@ namespace GtirbSharp
         public Guid? TargetUuid { get { return protoEdge.TargetUuid == null? (Guid?)null : GuidFactory.FromBigEndianByteArray(protoEdge.TargetUuid); } set { protoEdge.TargetUuid = value?.ToBigEndianByteArray(); } }
         public bool EdgeLabelConditional { get { return (protoEdge.Label?.Conditional).GetValueOrDefault(); } set { protoEdge.Label!.Conditional = value; } }
         public bool EdgeLabelDirect { get { return (protoEdge.Label?.Direct).GetValueOrDefault(); } set { protoEdge.Label!.Direct = value; } }
-        public EdgeType EdgeType { get { return protoEdge.Label!.Type; } set { protoEdge.Label!.Type = value; } }
+        public EdgeType EdgeType { get { return (EdgeType)protoEdge.Label!.Type; } set { protoEdge.Label!.Type = (proto.EdgeType)value; } }
         public Edge() : this(new proto.Edge())
         {
 

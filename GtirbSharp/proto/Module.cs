@@ -55,7 +55,7 @@ namespace GtirbSharp.proto
     }
 
     [global::ProtoBuf.ProtoContract()]
-    public enum FileFormat
+    internal enum FileFormat
     {
         [global::ProtoBuf.ProtoEnum(Name = @"Format_Undefined")]
         FormatUndefined = 0,
@@ -76,7 +76,7 @@ namespace GtirbSharp.proto
     }
 
     [global::ProtoBuf.ProtoContract(Name = @"ISA")]
-    public enum Isa
+    internal enum Isa
     {
         [global::ProtoBuf.ProtoEnum(Name = @"ISA_Undefined")]
         ISAUndefined = 0,

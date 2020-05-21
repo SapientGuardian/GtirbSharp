@@ -29,7 +29,7 @@ namespace GtirbSharp.proto
     }
 
     [global::ProtoBuf.ProtoContract()]
-    public enum SectionFlag
+    internal enum SectionFlag
     {
         [global::ProtoBuf.ProtoEnum(Name = @"Section_Undefined")]
         SectionUndefined = 0,
