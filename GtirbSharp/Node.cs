@@ -6,10 +6,19 @@ using System.Text;
 
 namespace GtirbSharp
 {
+    /// <summary>
+    /// A Node is any GTIRB object which can be referenced by UUID
+    /// </summary>
     public abstract class Node
     {
         private INodeContext? nodeContext;
+        /// <summary>
+        /// The UUID of this Node
+        /// </summary>
         public Guid UUID { get => GetUuid(); }
+        /// <summary>
+        /// The context in which this node exists
+        /// </summary>
         public INodeContext? NodeContext
         {
             get => nodeContext;

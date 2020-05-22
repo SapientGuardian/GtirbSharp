@@ -15,6 +15,9 @@ namespace GtirbSharp
         internal readonly proto.ProxyBlock protoObj;
         private Module? module;
 
+        /// <summary>
+        /// The module to which this ProxyBlock belongs
+        /// </summary>
         public Module? Module
         {
             get => module; set
@@ -35,7 +38,13 @@ namespace GtirbSharp
             }
         }
 
+        /// <summary>
+        /// Construct a new ProxyBlock owned by the specified module
+        /// </summary>
         public ProxyBlock(Module? module) : this(module, module?.NodeContext, new proto.ProxyBlock() { Uuid = Guid.NewGuid().ToBigEndianByteArray() }) { }
+        /// <summary>
+        /// Construct a new ProxyBlock with the specified NodeContext
+        /// </summary>
         public ProxyBlock(INodeContext nodeContext) : this(null, nodeContext, new proto.ProxyBlock() { Uuid = Guid.NewGuid().ToBigEndianByteArray() }) { }
         internal ProxyBlock(Module? module, INodeContext? nodeContext, proto.ProxyBlock protoProxyBlock)
         {

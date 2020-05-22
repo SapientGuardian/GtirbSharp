@@ -27,16 +27,55 @@ namespace GtirbSharp
         private readonly Lazy<IDictionary<Guid, Guid>> functionNames;
         private IR? ir;
 
+        /// <summary>
+        /// The path to the loadable binary object
+        /// represented by this module.An empty string if not specified.
+        /// The file represented by this path is indicitave of what file
+        /// this Module was initially created from; it is not guaranteed to
+        /// currently exist or have the same contents.
+        /// </summary>
         public string? BinaryPath { get { return protoObj.BinaryPath; } set { protoObj.BinaryPath = value; } }
+        /// <summary>
+        /// The preferred loading address of the binary
+        /// </summary>
         public ulong PreferredAddr { get { return protoObj.PreferredAddr; } set { protoObj.PreferredAddr = value; } }
+        /// <summary>
+        /// The rebase delta of the binary
+        /// </summary>
         public long RebaseDelta { get { return protoObj.RebaseDelta; } set { protoObj.RebaseDelta = value; } }
+        /// <summary>
+        /// The file format of the binary
+        /// </summary>
         public FileFormat FileFormat { get { return (FileFormat)protoObj.FileFormat; } set { protoObj.FileFormat = (proto.FileFormat)value; } }
+        /// <summary>
+        /// The ISA of the binary
+        /// </summary>
         public Isa ISA { get { return (Isa)protoObj.Isa; } set { protoObj.Isa = (proto.Isa)value; } }
+        /// <summary>
+        /// The name given to the binary. Some file formats use this
+        /// for linking and/or symbol resolution purposes.An empty string if
+        /// not specified by the format.
+        /// </summary>
         public string? Name { get { return protoObj.Name; } set { protoObj.Name = value; } }
+        /// <summary>
+        /// The UUID of the CodeBlock representing where control flow of this module begins
+        /// </summary>
         public Guid? EntryPointUuid { get { return protoObj.EntryPoint == null ? (Guid?)null : GuidFactory.FromBigEndianByteArray(protoObj.EntryPoint); } set { protoObj.EntryPoint = value == null ? null : value.Value.ToBigEndianByteArray(); } }
+        /// <summary>
+        /// The set of Sections in the binary
+        /// </summary>
         public IList<Section> Sections { get; private set; }
+        /// <summary>
+        /// The set of Symbols in the binary
+        /// </summary>
         public IList<Symbol>? Symbols { get; private set; }
+        /// <summary>
+        /// The set of ProxyBlocks in the binary
+        /// </summary>
         public IList<ProxyBlock>? ProxyBlocks { get; private set; }
+        /// <summary>
+        /// The CodeBlock representing where control flow of this module begins
+        /// </summary>
         public CodeBlock? EntryPoint
         {
             get
@@ -45,7 +84,15 @@ namespace GtirbSharp
                 var cb = NodeContext?.GetByUuid(this.EntryPointUuid.Value);
                 return cb as CodeBlock;
             }
+            set
+            {
+                this.EntryPointUuid = value?.UUID;
+            }
         }
+        
+        /// <summary>
+        /// The AuxData attached to the binary
+        /// </summary>
         public AuxData AuxData { get; private set; }
 
         // AuxData schemas
@@ -91,6 +138,9 @@ namespace GtirbSharp
         /// </summary>
         public IDictionary<Guid, Guid> FunctionNames => functionNames.Value;
 
+        /// <summary>
+        /// The IR to which this module belongs
+        /// </summary>
         public IR? IR { 
             get => ir; 
             set 
@@ -108,10 +158,17 @@ namespace GtirbSharp
             } 
         }
 
+        /// <summary>
+        /// Construct a new Module with the specified owning IR
+        /// </summary>
         public Module(IR? ir) : this(ir, ir?.NodeContext, new proto.Module() { Uuid = Guid.NewGuid().ToBigEndianByteArray() })
         {
 
         }
+
+        /// <summary>
+        /// Constrruct a new Module with the specified NodeContext
+        /// </summary>
         public Module(INodeContext? nodeContext) : this(null, nodeContext, new proto.Module() { Uuid = Guid.NewGuid().ToBigEndianByteArray() })
         {
 

@@ -19,6 +19,9 @@ namespace GtirbSharp
         internal readonly proto.Section protoObj;
         private Module? module;
 
+        /// <summary>
+        /// The Module to which this Section belongs
+        /// </summary>
         public Module? Module
         {
             get => module; set
@@ -39,10 +42,26 @@ namespace GtirbSharp
             }
         }
 
+        /// <summary>
+        /// The section name (E.g. ".text", ".bss", etc)
+        /// </summary>
         public string Name { get { return protoObj.Name; } set { protoObj.Name = value; } }
+        /// <summary>
+        /// The set of ByteIntervals contained in this Section
+        /// </summary>
         public IList<ByteInterval> ByteIntervals { get; private set; }
+        /// <summary>
+        /// The set of SectionFlags describing this Section
+        /// </summary>
         public IList<SectionFlag> SectionFlags { get; private set; }
+        /// <summary>
+        /// Construct a new Section owned by the specified Module
+        /// </summary>
         public Section(Module? module) : this(module, module?.NodeContext, new proto.Section() { Uuid = Guid.NewGuid().ToBigEndianByteArray() }) { }
+        /// <summary>
+        /// Construct a new Section in the specified NodeContext
+        /// </summary>
+        /// <param name="nodeContext"></param>
         public Section(INodeContext nodeContext) : this(null, nodeContext, new proto.Section() { Uuid = Guid.NewGuid().ToBigEndianByteArray() }) { }
         internal Section(Module? module, INodeContext? nodeContext, proto.Section protoSection)
         {

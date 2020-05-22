@@ -31,7 +31,7 @@ namespace GitrbSharp.Tests
         }
 
         [Fact]
-        void RegistersWithOwningSection()
+        void RegistersWithOwner()
         {
             var section = new Section((Module)null);
             var bi = new ByteInterval(section);
@@ -39,7 +39,7 @@ namespace GitrbSharp.Tests
         }
 
         [Fact]
-        void DeregistersWithOwningSection()
+        void DeregistersWithOwner()
         {
             var section = new Section((Module)null);
             var bi = new ByteInterval(section);

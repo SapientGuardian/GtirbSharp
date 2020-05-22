@@ -21,6 +21,9 @@ namespace GtirbSharp
         private CFG? cfg;
         private readonly Dictionary<Guid, WeakReference<Node>> uuidCache = new Dictionary<Guid, WeakReference<Node>>();
 
+        /// <summary>
+        /// The set of modules contained in this IR
+        /// </summary>
         public IList<Module> Modules { get; private set; }
         public CFG? Cfg
         {
@@ -31,8 +34,14 @@ namespace GtirbSharp
             }
         }
 
+        /// <summary>
+        /// AuxData attached to this IR
+        /// </summary>
         public AuxData AuxData { get; private set; }
 
+        /// <summary>
+        /// The version of the schema used in this IR
+        /// </summary>
         public uint ProtoVersion { get => protoObj.Version; set => protoObj.Version = value; }
 
         public IR() : this(new proto.Ir() { Uuid = Guid.NewGuid().ToBigEndianByteArray() })
@@ -51,6 +60,9 @@ namespace GtirbSharp
             
         }
 
+        /// <summary>
+        /// Create an IR from a protobuf stream
+        /// </summary>
         public static IR LoadFromStream(Stream source)
         {
             var protoObj = Serializer.Deserialize<proto.Ir>(source);
@@ -59,6 +71,10 @@ namespace GtirbSharp
             return ir;
         }
 
+        /// <summary>
+        /// Save this IR to a protobuf stream
+        /// </summary>
+        /// <param name="target"></param>
         public void SaveToStream(Stream target)
         {
             Serializer.Serialize(target, protoObj);
@@ -77,6 +93,9 @@ namespace GtirbSharp
             uuidCache.Remove(node.UUID);
         }
 
+        /// <summary>
+        /// Get a node by its UUID
+        /// </summary>
         public Node? GetByUuid(Guid uuid)
         {
             if (uuidCache.TryGetValue(uuid, out var weakReference) && weakReference.TryGetTarget(out var target))
@@ -86,6 +105,10 @@ namespace GtirbSharp
             return null;
         }
 
+        /// <summary>
+        /// Get the total number of nodes contained in this IR
+        /// </summary>
+        /// <returns></returns>
         public int NodeCount()
         {
             return uuidCache.Count;
