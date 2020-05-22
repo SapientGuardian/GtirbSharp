@@ -13,6 +13,9 @@ namespace GtirbSharp
     {
         internal readonly proto.Block protoBlock;
 
+        /// <summary>
+        /// The offset of this block in the owning ByteInterval
+        /// </summary>
         public ulong Offset { get => protoBlock.Offset; set => protoBlock.Offset = value; }       
 
         internal Block(proto.Block protoBlock)
