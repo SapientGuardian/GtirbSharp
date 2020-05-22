@@ -144,11 +144,11 @@ namespace GitrbSharp.Tests
             if (oldIR.Cfg != null)
             {
                 newIR.Cfg = new CFG();
-                foreach (var vertice in oldIR.Cfg.VerticeList)
+                foreach (var vertice in oldIR.Cfg.Vertices)
                 {
-                    newIR.Cfg.VerticeList.Add(vertice);
+                    newIR.Cfg.Vertices.Add(uuidTranslationTable[vertice]);
                 }
-                foreach (var oldEdge in oldIR.Cfg.EdgeList)
+                foreach (var oldEdge in oldIR.Cfg.Edges)
                 {
                     var newEdge = new Edge();
                     newEdge.EdgeLabelConditional = oldEdge.EdgeLabelConditional;
@@ -162,7 +162,7 @@ namespace GitrbSharp.Tests
                     {
                         newEdge.TargetUuid = uuidTranslationTable[oldEdge.TargetUuid.Value];
                     }
-                    newIR.Cfg.EdgeList.Add(newEdge);
+                    newIR.Cfg.Edges.Add(newEdge);
                 }
             }
 
@@ -235,8 +235,8 @@ namespace GitrbSharp.Tests
 
 
             newIR.NodeCount().Should().Be(oldIR.NodeCount());
-            newIR.Cfg.EdgeList.Count.Should().Be(oldIR.Cfg.EdgeList.Count);
-            newIR.Cfg.VerticeList.Count.Should().Be(oldIR.Cfg.VerticeList.Count);     
+            newIR.Cfg.Edges.Count.Should().Be(oldIR.Cfg.Edges.Count);
+            newIR.Cfg.Vertices.Count.Should().Be(oldIR.Cfg.Vertices.Count);     
 
             var ms1 = new MemoryStream();
             var ms2 = new MemoryStream();
