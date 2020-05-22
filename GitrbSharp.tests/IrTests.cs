@@ -40,17 +40,28 @@ namespace gitrbsharp.tests
                 oldIR.AuxData.TryGetRaw(key, out var data);
                 newIR.AuxData.SetRaw(key, data);
             }
+            newIR.AuxData.Count.Should().Be(oldIR.AuxData.Count);
 
             foreach (var oldModule in oldIR.Modules)
             {
                 var newModule = new Module(newIR);
                 uuidTranslationTable[oldModule.UUID] = newModule.UUID;
 
+                newModule.BinaryPath = oldModule.BinaryPath;
+                newModule.PreferredAddr = oldModule.PreferredAddr;
+                newModule.RebaseDelta = oldModule.RebaseDelta;
+                newModule.FileFormat = oldModule.FileFormat;
+                newModule.ISA = oldModule.ISA;
+                newModule.Name = oldModule.Name;
+
+
                 foreach (var key in oldModule.AuxData.AuxDataTypes)
                 {
                     oldModule.AuxData.TryGetRaw(key, out var data);
                     newModule.AuxData.SetRaw(key, data);
                 }
+
+                newModule.AuxData.Count.Should().Be(oldModule.AuxData.Count);
 
                 foreach (var oldSection in oldModule.Sections)
                 {
@@ -85,6 +96,7 @@ namespace gitrbsharp.tests
                                 dataBlock.Size = ((DataBlock)oldBlock).Size;
                             }
                         }
+                        newByteInterval.Blocks.Count.Should().Be(oldByteInterval.Blocks.Count);
 
                         newByteInterval.Contents = oldByteInterval?.Contents?.ToArray();
                         newByteInterval.Size = oldByteInterval.Size;
@@ -92,22 +104,24 @@ namespace gitrbsharp.tests
                         {
                             newByteInterval.SymbolicExpressions.Add(oldSymbolicExpression);
                         }
-                        newSection.ByteIntervals.Add(newByteInterval);
+                        newByteInterval.SymbolicExpressions.Count.Should().Be(oldByteInterval.SymbolicExpressions.Count);
                     }
+                    newSection.ByteIntervals.Count.Should().Be(oldSection.ByteIntervals.Count);
                     newSection.Name = oldSection.Name;
                     foreach (var flag in oldSection.SectionFlags)
                     {
                         newSection.SectionFlags.Add(flag);
                     }
-                    newModule.Sections.Add(newSection);
+                    newSection.SectionFlags.Count.Should().Be(oldSection.SectionFlags.Count);
                 }
+                newModule.Sections.Count.Should().Be(oldModule.Sections.Count);
 
                 foreach (var oldProxyBlock in oldModule.ProxyBlocks)
                 {
                     var newProxyBlock = new ProxyBlock(newModule);
                     uuidTranslationTable[oldProxyBlock.UUID] = newProxyBlock.UUID;
-                    newModule.ProxyBlocks.Add(newProxyBlock);
                 }
+                newModule.ProxyBlocks.Count.Should().Be(oldModule.ProxyBlocks.Count);
 
                 foreach (var oldSymbol in oldModule.Symbols)
                 {
@@ -122,8 +136,9 @@ namespace gitrbsharp.tests
                     {
                         newSymbol.Value = oldSymbol.Value.Value;
                     }
-                    newModule.Symbols.Add(newSymbol);
+                    newSymbol.AtEnd = oldSymbol.AtEnd;
                 }
+                newModule.Symbols.Count.Should().Be(oldModule.Symbols.Count);
             }
 
             if (oldIR.Cfg != null)
@@ -151,9 +166,20 @@ namespace gitrbsharp.tests
                 }
             }
 
-            // AuxData fixups
+            foreach (var oldModule in oldIR.Modules)
+            {
+                var newModule = (Module)newIR.GetByUuid(uuidTranslationTable[oldModule.UUID]);
+                if (oldModule.EntryPointUuid.HasValue)
+                {
+                    newModule.EntryPointUuid = uuidTranslationTable[oldModule.EntryPointUuid.Value];
+                }
+            }
+
+            // ID fixups
             foreach (var newModule in newIR.Modules)
             {
+
+
                 Guid[] oldKeys;
 
                 oldKeys = newModule.Alignment.Keys.ToArray();
@@ -172,7 +198,7 @@ namespace gitrbsharp.tests
 
                 oldKeys = newModule.SymbolForwarding.Keys.ToArray();
                 foreach (var key in oldKeys)
-                {                    
+                {
                     newModule.SymbolForwarding[uuidTranslationTable[key]] = uuidTranslationTable[newModule.SymbolForwarding[key]];
                     newModule.SymbolForwarding.Remove(key);
                 }
@@ -210,7 +236,14 @@ namespace gitrbsharp.tests
 
             newIR.NodeCount().Should().Be(oldIR.NodeCount());
             newIR.Cfg.EdgeList.Count.Should().Be(oldIR.Cfg.EdgeList.Count);
-            newIR.Cfg.VerticeList.Count.Should().Be(oldIR.Cfg.VerticeList.Count);
+            newIR.Cfg.VerticeList.Count.Should().Be(oldIR.Cfg.VerticeList.Count);     
+
+            var ms1 = new MemoryStream();
+            var ms2 = new MemoryStream();
+            oldIR.SaveToStream(ms1);
+            newIR.SaveToStream(ms2);
+
+            (ms1.Length - ms2.Length).Should().Be(0);
         }
     }
 }

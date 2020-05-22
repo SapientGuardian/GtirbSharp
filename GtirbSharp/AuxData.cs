@@ -22,9 +22,17 @@ namespace GtirbSharp
         /// </summary>
         public IEnumerable<string> AuxDataTypes => protoAuxDataMap.Keys;
 
+        public int Count => protoAuxDataMap.Count;
+
         internal AuxData(Dictionary<string, proto.AuxData> protoAuxDataMap)
         {
             this.protoAuxDataMap = protoAuxDataMap;
+            
+            // Sync the names
+            foreach (var kvp in protoAuxDataMap)
+            {
+                kvp.Value.TypeName = kvp.Key;
+            }
         }
 
         public bool TryGetRaw(string typeName, out byte[]? data)
@@ -38,9 +46,13 @@ namespace GtirbSharp
             return false;
         }
 
-        public void SetRaw(string typeName, byte[] data)
+        public void SetRaw(string typeName, byte[]? data)
         {
-            if (protoAuxDataMap.TryGetValue(typeName, out var protoData))
+            if (data == null)
+            {
+                protoAuxDataMap.Remove(typeName);
+            }
+            else if (protoAuxDataMap.TryGetValue(typeName, out var protoData))
             {
                 protoData.Data = data;                
             }
