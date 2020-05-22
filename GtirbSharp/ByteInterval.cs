@@ -122,7 +122,7 @@ namespace GtirbSharp
         /// Construct a new ByteInterval within a specified NodeContext
         /// </summary>
         /// <param name="nodeContext"></param>
-        public ByteInterval(INodeContext nodeContext) : this(null, nodeContext, new proto.ByteInterval() { Uuid = Guid.NewGuid().ToBigEndianByteArray() }) { }
+        public ByteInterval(INodeContext? nodeContext) : this(null, nodeContext, new proto.ByteInterval() { Uuid = Guid.NewGuid().ToBigEndianByteArray() }) { }
         internal ByteInterval(Section? section, INodeContext? nodeContext, proto.ByteInterval protoByteInterval)
         {
             this.protoObj = protoByteInterval;
