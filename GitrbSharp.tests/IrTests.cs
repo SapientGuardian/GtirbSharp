@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using Xunit;
 
-namespace gitrbsharp.tests
+namespace GitrbSharp.Tests
 {
     public class IrTests
     {
