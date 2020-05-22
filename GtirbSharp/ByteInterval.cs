@@ -18,6 +18,9 @@ namespace GtirbSharp
         internal readonly proto.ByteInterval protoObj;
         private Section? section;
 
+        /// <summary>
+        /// The Section that owns this ByteInterval
+        /// </summary>
         public Section? Section
         {
             get => section;
@@ -39,6 +42,14 @@ namespace GtirbSharp
             }
         }
 
+        /// <summary>
+        /// The fixed address of this interval, if present. If this
+        /// field is present, it may indicate the original address at which this
+        /// interval was located at in memory, or it may indicate that this block's
+        /// address is fixed and must not be changed. If this field is not present,
+        /// it indicates that the interval is free to be moved around in memory
+        /// while preserving program semantics.
+        /// </summary>
         public ulong? Address
         {
             get => protoObj.HasAddress ? protoObj.Address : (ulong?)null; set
@@ -55,6 +66,9 @@ namespace GtirbSharp
                 }
             }
         }
+        /// <summary>
+        /// The size of this interval in bytes
+        /// </summary>
         public ulong Size
         {
             get
@@ -72,6 +86,9 @@ namespace GtirbSharp
             }
         }
 
+        /// <summary>
+        /// The bytes stored in this interval
+        /// </summary>
         public byte[]? Contents
         {
             get
@@ -87,10 +104,24 @@ namespace GtirbSharp
                 }
             }
         }
+        /// <summary>
+        /// The set of all Blocks in this interval
+        /// </summary>
         public IList<Block> Blocks { get; private set; }
+        /// <summary>
+        /// A mapping from an offset in the interval to a SymbolicExpression in the interval
+        /// </summary>
         public ICollection<SymbolicExpression> SymbolicExpressions { get; private set; }
 
+        /// <summary>
+        /// Construct a new ByteInterval with an owning Section
+        /// </summary>
+        /// <param name="section"></param>
         public ByteInterval(Section? section) : this(section, section?.NodeContext, new proto.ByteInterval() { Uuid = Guid.NewGuid().ToBigEndianByteArray() }) { }
+        /// <summary>
+        /// Construct a new ByteInterval within a specified NodeContext
+        /// </summary>
+        /// <param name="nodeContext"></param>
         public ByteInterval(INodeContext nodeContext) : this(null, nodeContext, new proto.ByteInterval() { Uuid = Guid.NewGuid().ToBigEndianByteArray() }) { }
         internal ByteInterval(Section? section, INodeContext? nodeContext, proto.ByteInterval protoByteInterval)
         {
