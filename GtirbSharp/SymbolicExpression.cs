@@ -9,6 +9,9 @@ namespace GtirbSharp
     /// </summary>
     public abstract class SymbolicExpression
     {
+        /// <summary>
+        /// Constant offset
+        /// </summary>
         public ulong Offset
         {
             get => GetOffset(); set => SetOffset(GetOffset(), value);

@@ -14,6 +14,9 @@ namespace GtirbSharp
 
         protected override ulong GetOffset() => (ulong)protoObj.Offset;
         protected override void SetOffset(ulong oldValue, ulong newValue) { protoObj.Offset = (long)newValue; base.SetOffset(oldValue, newValue); }
+        /// <summary>
+        /// UUID of a Symbol representing an address
+        /// </summary>
         public Guid? SymbolUuid { get => protoObj.SymbolUuid == null? (Guid?)null : GuidFactory.FromBigEndianByteArray(protoObj.SymbolUuid); set => protoObj.SymbolUuid = value == null? null : value.Value.ToBigEndianByteArray(); }
 
         internal SymAddrConst(proto.SymAddrConst protoObj)
