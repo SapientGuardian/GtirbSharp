@@ -18,7 +18,8 @@ namespace GtirbSharp
         internal readonly proto.ByteInterval protoObj;
         private Section? section;
 
-        public Section? Section { 
+        public Section? Section
+        {
             get => section;
             set
             {
@@ -62,23 +63,10 @@ namespace GtirbSharp
             }
             set
             {
-                if (value != protoObj.Size || Contents == null || (int)value != Contents.Length)
+                protoObj.Size = value;
+                if (Contents != null && (int)value < Contents.Length)
                 {
-                    protoObj.Size = value;
-                    if (Contents == null)
-                    {
-                        Contents = new byte[(int)value];
-                    }
-                    else if ((int)value < Contents.Length)
-                    {
-                        Contents = Contents.AsMemory().Slice(0, (int)value).ToArray();
-                    }
-                    else
-                    {
-                        var newBytes = new byte[(int)value];
-                        Array.Copy(Contents, newBytes, Contents.Length);
-                        Contents = newBytes;
-                    }
+                    Contents = Contents.AsMemory().Slice(0, (int)value).ToArray();
                 }
 
             }
@@ -93,7 +81,10 @@ namespace GtirbSharp
             set
             {
                 protoObj.Contents = value;
-                protoObj.Size = value == null ? 0 : (ulong)value.Length;
+                if (value != null && (int)Size < value.Length)
+                {
+                    Size = (ulong)value.Length;
+                }
             }
         }
         public IList<Block> Blocks { get; private set; }
