@@ -15,6 +15,9 @@ namespace GtirbSharp
         private readonly proto.DataBlock protoObj;
         private ByteInterval? byteInterval;
 
+        /// <summary>
+        /// The ByteInterval to which this DataBlock belongs
+        /// </summary>
         public ByteInterval? ByteInterval
         {
             get => byteInterval;
@@ -40,9 +43,16 @@ namespace GtirbSharp
             }
         }
 
+        /// <summary>
+        /// The size of the block in bytes
+        /// </summary>
         public ulong Size { get { return protoObj.Size; } set { protoObj.Size = value; } }
 
-        public DataBlock(INodeContext? nodeContext) : this(null, nodeContext, new proto.Block() { Data = new proto.DataBlock { Uuid = Guid.NewGuid().ToBigEndianByteArray() } })
+        /// <summary>
+        /// Construct a new DataBlock in the specified NodeContext
+        /// </summary>
+        /// <param name="nodeContext"></param>
+        public DataBlock(INodeContext nodeContext) : this(null, nodeContext, new proto.Block() { Data = new proto.DataBlock { Uuid = Guid.NewGuid().ToBigEndianByteArray() } })
         {
 
         }
@@ -51,6 +61,9 @@ namespace GtirbSharp
 
         }
 
+        /// <summary>
+        /// Construct a new DataBlock owned by the specified ByteInterval
+        /// </summary>
         internal DataBlock(ByteInterval? byteInterval, INodeContext? nodeContext, proto.Block block) : base(block)
         {
             this.protoObj = block.Data ?? throw new ArgumentException($"Block was not a {nameof(proto.DataBlock)}", nameof(block));

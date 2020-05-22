@@ -5,6 +5,7 @@ using Xunit;
 using FluentAssertions;
 using GtirbSharp;
 using GtirbSharp.Interfaces;
+using System.Linq;
 
 namespace GitrbSharp.Tests
 {
@@ -13,7 +14,7 @@ namespace GitrbSharp.Tests
         [Fact]
         void SizeCanBeLargerThanContents()
         {
-            var bi = new ByteInterval((INodeContext)null);
+            var bi = new ByteInterval((Section)null);
             bi.Contents = new byte[3];
             bi.Size = 5;
             bi.Contents.Length.Should().Be(3);
@@ -23,10 +24,34 @@ namespace GitrbSharp.Tests
         [Fact]
         void ContentsTruncatedToSize()
         {
-            var bi = new ByteInterval((INodeContext)null);
+            var bi = new ByteInterval((Section)null);
             bi.Contents = new byte[5];
             bi.Size = 3;
             bi.Contents.Length.Should().Be(3);
+        }
+
+        [Fact]
+        void RegistersWithOwningSection()
+        {
+            var section = new Section((Module)null);
+            var bi = new ByteInterval(section);
+            section.ByteIntervals.Single().Should().Be(bi);            
+        }
+
+        [Fact]
+        void DeregistersWithOwningSection()
+        {
+            var section = new Section((Module)null);
+            var bi = new ByteInterval(section);
+            bi.Section = null;
+            section.ByteIntervals.Should().BeEmpty();
+        }
+
+        [Fact]
+        void GeneratesUUID()
+        {
+            var bi = new ByteInterval((Section)null);
+            bi.UUID.Should().NotBe(default);
         }
     }
 }

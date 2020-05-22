@@ -15,6 +15,9 @@ namespace GtirbSharp
         private readonly proto.CodeBlock protoObj;
         private ByteInterval? byteInterval;
 
+        /// <summary>
+        /// The ByteInterval to which this CodeBlock belongs
+        /// </summary>
         public ByteInterval? ByteInterval
         {
             get => byteInterval;
@@ -40,12 +43,28 @@ namespace GtirbSharp
             }
         }
 
+        /// <summary>
+        /// The size of the block in bytes
+        /// </summary>
         public ulong Size { get { return protoObj.Size; } set { protoObj.Size = value; } }
+        /// <summary>
+        /// The decode mode of the block,
+        /// used in some ISAs to differentiate between sub-ISAs
+        /// (e.g.differentiating blocks written in ARM and Thumb).
+        /// </summary>
         public ulong DecodeMode { get { return protoObj.DecodeMode; } set { protoObj.DecodeMode = value; } }
-        public CodeBlock(INodeContext? nodeContext) : this(null, nodeContext, new proto.Block() { Code = new proto.CodeBlock { Uuid = Guid.NewGuid().ToBigEndianByteArray() } })
+        /// <summary>
+        /// Construct a new CodeBlock in the specified NodeContext
+        /// </summary>
+        /// <param name="nodeContext"></param>
+        public CodeBlock(INodeContext nodeContext) : this(null, nodeContext, new proto.Block() { Code = new proto.CodeBlock { Uuid = Guid.NewGuid().ToBigEndianByteArray() } })
         {
 
         }
+
+        /// <summary>
+        /// Construct a new CodeBlock owned by the specified ByteInterval
+        /// </summary>
         public CodeBlock(ByteInterval? byteInterval) : this(byteInterval, byteInterval?.NodeContext, new proto.Block() { Code = new proto.CodeBlock { Uuid = Guid.NewGuid().ToBigEndianByteArray() } })
         {
 
