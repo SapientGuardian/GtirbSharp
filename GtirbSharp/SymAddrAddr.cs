@@ -27,6 +27,13 @@ namespace GtirbSharp
         /// </summary>
         public Guid? Symbol2Uuid { get => protoObj.Symbol2Uuid == null ? (Guid?)null : GuidFactory.FromBigEndianByteArray(protoObj.Symbol2Uuid); set => protoObj.Symbol2Uuid = value == null ? null : value.Value.ToBigEndianByteArray(); }
 
+        /// <summary>
+        /// Construct a new SymAddrAddr
+        /// </summary>
+        public SymAddrAddr() : this(new proto.SymAddrAddr())
+        {
+
+        }
         internal SymAddrAddr(proto.SymAddrAddr protoObj)
         {
             this.protoObj = protoObj;

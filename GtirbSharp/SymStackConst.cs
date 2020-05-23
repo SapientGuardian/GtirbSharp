@@ -19,6 +19,13 @@ namespace GtirbSharp
         /// </summary>
         public Guid? SymbolUuid { get => protoObj.SymbolUuid == null? (Guid?)null : GuidFactory.FromBigEndianByteArray(protoObj.SymbolUuid); set => protoObj.SymbolUuid = value == null? null : value.Value.ToBigEndianByteArray(); }
 
+        /// <summary>
+        /// Construct a new SymStackConst
+        /// </summary>
+        public SymStackConst() : this(new proto.SymStackConst())
+        {
+
+        }
         internal SymStackConst(proto.SymStackConst protoObj)
         {
             this.protoObj = protoObj;
