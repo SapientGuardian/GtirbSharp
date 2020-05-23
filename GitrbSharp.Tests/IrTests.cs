@@ -35,10 +35,12 @@ namespace GitrbSharp.Tests
 
             var uuidTranslationTable = new Dictionary<Guid, Guid>(); // old -> new
 
-            foreach (var key in oldIR.AuxData.AuxDataNames)
+            foreach (var key in oldIR.AuxData.Keys)
             {
-                oldIR.AuxData.TryGet(key, out var data);
-                newIR.AuxData.Set(key, data);
+                var oldData = oldIR.AuxData[key];
+                newIR.AuxData[key] = new AuxDataItem(oldData.TypeName, oldData.Data);
+
+
             }
             newIR.AuxData.Count.Should().Be(oldIR.AuxData.Count);
 
@@ -55,10 +57,10 @@ namespace GitrbSharp.Tests
                 newModule.Name = oldModule.Name;
 
 
-                foreach (var key in oldModule.AuxData.AuxDataNames)
+                foreach (var key in oldModule.AuxData.Keys)
                 {
-                    oldModule.AuxData.TryGet(key, out var data);
-                    newModule.AuxData.Set(key, data);
+                    var oldData = oldModule.AuxData[key];
+                    newModule.AuxData[key] = new AuxDataItem(oldData.TypeName, oldData.Data);
                 }
 
                 newModule.AuxData.Count.Should().Be(oldModule.AuxData.Count);

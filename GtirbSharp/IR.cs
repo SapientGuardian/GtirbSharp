@@ -37,7 +37,7 @@ namespace GtirbSharp
         /// <summary>
         /// AuxData attached to this IR
         /// </summary>
-        public AuxData AuxData { get; private set; }
+        public IDictionary<string, AuxDataItem> AuxData { get; private set; }
 
         /// <summary>
         /// The version of the schema used in this IR
@@ -56,8 +56,8 @@ namespace GtirbSharp
             Modules = new ProtoList<Module, proto.Module>(this.protoObj.Modules, proto => new Module(this, this.NodeContext, proto), module => module.protoObj);
             protoObj.Cfg = protoObj.Cfg ?? new proto.Cfg();
             Cfg = new CFG(protoObj.Cfg);
-            AuxData = new AuxData(protoObj.AuxDatas);
-            
+            AuxData = new ProtoDictionary<string, AuxDataItem, proto.AuxData>(protoObj.AuxDatas, proto => new AuxDataItem(proto.TypeName, proto.Data), auxDataItem => new proto.AuxData { Data = auxDataItem.Data, TypeName = auxDataItem.TypeName });
+
         }
 
         /// <summary>

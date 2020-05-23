@@ -90,10 +90,11 @@ namespace GtirbSharp
             }
         }
         
+
         /// <summary>
         /// The AuxData attached to the binary
         /// </summary>
-        public AuxData AuxData { get; private set; }
+        public IDictionary<string, AuxDataItem> AuxData { get; private set; }
 
         // AuxData schemas
 
@@ -181,7 +182,7 @@ namespace GtirbSharp
             Sections = new ProtoList<Section, proto.Section>(protoModule.Sections, proto => new Section(this, NodeContext, proto), section => section.protoObj);
             Symbols = new ProtoList<Symbol, proto.Symbol>(protoModule.Symbols, proto => new Symbol(this, NodeContext, proto), symbol => symbol.protoObj);
             ProxyBlocks = new ProtoList<ProxyBlock, proto.ProxyBlock>(protoModule.Proxies, proto => new ProxyBlock(this, NodeContext, proto), proxyBlock => proxyBlock.protoObj);
-            AuxData = new AuxData(protoModule.AuxDatas);
+            AuxData = new ProtoDictionary<string, AuxDataItem, proto.AuxData>(protoObj.AuxDatas, proto => new AuxDataItem(proto.TypeName, proto.Data), auxDataItem => new proto.AuxData { Data = auxDataItem.Data, TypeName = auxDataItem.TypeName });
 
             alignment = new Lazy<IDictionary<Guid, ulong>>(AuxData.Alignment, true);
             types = new Lazy<IDictionary<Guid, string>>(AuxData.Types, true);
