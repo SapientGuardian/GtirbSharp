@@ -15,7 +15,7 @@ namespace GtirbSharp.proto
 
         [global::ProtoBuf.ProtoMember(1, Name = @"type_name")]
         [global::System.ComponentModel.DefaultValue("")]
-        public string TypeName { get; set; } = "";
+        public string? TypeName { get; set; } = "";
 
         [global::ProtoBuf.ProtoMember(2, Name = @"data")]
         public byte[]? Data { get; set; }

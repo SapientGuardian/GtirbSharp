@@ -13,9 +13,9 @@ namespace GitrbSharp.Tests
         void CanRemoveEntry()
         {
             var module = new Module(null);
-            module.AuxData.SetRaw("test", new byte[] { 1, 2, 3 });
+            module.AuxData.Set("test", new AuxDataItem(null, new byte[] { 1, 2, 3 }));
             module.AuxData.Count.Should().Be(1); // Confirm the entry got added
-            module.AuxData.SetRaw("test", null);
+            module.AuxData.Remove("test");
             module.AuxData.Count.Should().Be(0); // Confirm the entry got removed
         }
     }

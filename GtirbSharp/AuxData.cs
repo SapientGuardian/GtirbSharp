@@ -20,7 +20,7 @@ namespace GtirbSharp
         /// <summary>
         /// Retrieve all keys currently in the map
         /// </summary>
-        public IEnumerable<string> AuxDataTypes => protoAuxDataMap.Keys;
+        public IEnumerable<string> AuxDataNames => protoAuxDataMap.Keys;
 
         /// <summary>
         /// Get the number of items currently in the map
@@ -31,46 +31,47 @@ namespace GtirbSharp
         {
             this.protoAuxDataMap = protoAuxDataMap;
             
-            // Sync the names
-            foreach (var kvp in protoAuxDataMap)
-            {
-                kvp.Value.TypeName = kvp.Key;
-            }
         }
 
         /// <summary>
-        /// Get the raw data associated with a type name
+        /// Get an aux data item by name
         /// </summary>
         /// <returns>True if the key was found, false if not</returns>
-        public bool TryGetRaw(string typeName, out byte[]? data)
+        public bool TryGet(string name, out AuxDataItem? auxData)
         {
-            if (protoAuxDataMap.TryGetValue(typeName, out var protoData))
+            if (protoAuxDataMap.TryGetValue(name, out var protoData))
             {
-                data = protoData.Data;
+                auxData = new AuxDataItem(protoData.TypeName, protoData.Data);
                 return true;
             }
-            data = null;
+            auxData = null;
             return false;
         }
 
         /// <summary>
-        /// Set the raw data associated with a type name. Can be used to remove an entry.
+        /// Set the raw data associated with a name.
         /// </summary>
-        public void SetRaw(string typeName, byte[]? data)
+        public void Set(string name, AuxDataItem auxData)
         {
-            if (data == null)
+            if (protoAuxDataMap.TryGetValue(name, out var protoData))
             {
-                protoAuxDataMap.Remove(typeName);
-            }
-            else if (protoAuxDataMap.TryGetValue(typeName, out var protoData))
-            {
-                protoData.Data = data;                
+                protoData.Data = auxData.Data;
+                protoData.TypeName = auxData.TypeName;
             }
             else
             {
-                protoAuxDataMap[typeName] = new proto.AuxData { Data = data, TypeName = typeName };
+                protoAuxDataMap[name] = new proto.AuxData { Data = auxData.Data, TypeName = auxData.TypeName };
             }
-        }                    
+        }   
+
+        /// <summary>
+        /// Remove an entry by name
+        /// </summary>
+        /// <param name="name">Name of the entry to remove</param>
+        public void Remove(string name)
+        {
+            protoAuxDataMap.Remove(name);
+        }
     }
 }
 #nullable restore

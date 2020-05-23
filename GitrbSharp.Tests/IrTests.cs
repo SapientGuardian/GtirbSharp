@@ -35,10 +35,10 @@ namespace GitrbSharp.Tests
 
             var uuidTranslationTable = new Dictionary<Guid, Guid>(); // old -> new
 
-            foreach (var key in oldIR.AuxData.AuxDataTypes)
+            foreach (var key in oldIR.AuxData.AuxDataNames)
             {
-                oldIR.AuxData.TryGetRaw(key, out var data);
-                newIR.AuxData.SetRaw(key, data);
+                oldIR.AuxData.TryGet(key, out var data);
+                newIR.AuxData.Set(key, data);
             }
             newIR.AuxData.Count.Should().Be(oldIR.AuxData.Count);
 
@@ -55,10 +55,10 @@ namespace GitrbSharp.Tests
                 newModule.Name = oldModule.Name;
 
 
-                foreach (var key in oldModule.AuxData.AuxDataTypes)
+                foreach (var key in oldModule.AuxData.AuxDataNames)
                 {
-                    oldModule.AuxData.TryGetRaw(key, out var data);
-                    newModule.AuxData.SetRaw(key, data);
+                    oldModule.AuxData.TryGet(key, out var data);
+                    newModule.AuxData.Set(key, data);
                 }
 
                 newModule.AuxData.Count.Should().Be(oldModule.AuxData.Count);
@@ -175,63 +175,65 @@ namespace GitrbSharp.Tests
                 }
             }
 
-            // ID fixups
-            foreach (var newModule in newIR.Modules)
-            {
+            // These fixups cause new auxdata to be written, which won't preserve the type hints, and will throw off the file size comparison.
+
+            //// ID fixups
+            //foreach (var newModule in newIR.Modules)
+            //{
 
 
-                Guid[] oldKeys;
+            //    Guid[] oldKeys;
 
-                oldKeys = newModule.Alignment.Keys.ToArray();
-                foreach (var key in oldKeys)
-                {
-                    newModule.Alignment[uuidTranslationTable[key]] = newModule.Alignment[key];
-                    newModule.Alignment.Remove(key);
-                }
+            //    oldKeys = newModule.Alignment.Keys.ToArray();
+            //    foreach (var key in oldKeys)
+            //    {
+            //        newModule.Alignment[uuidTranslationTable[key]] = newModule.Alignment[key];
+            //        newModule.Alignment.Remove(key);
+            //    }
 
-                oldKeys = newModule.Types.Keys.ToArray();
-                foreach (var key in oldKeys)
-                {
-                    newModule.Types[uuidTranslationTable[key]] = newModule.Types[key];
-                    newModule.Types.Remove(key);
-                }
+            //    oldKeys = newModule.Types.Keys.ToArray();
+            //    foreach (var key in oldKeys)
+            //    {
+            //        newModule.Types[uuidTranslationTable[key]] = newModule.Types[key];
+            //        newModule.Types.Remove(key);
+            //    }
 
-                oldKeys = newModule.SymbolForwarding.Keys.ToArray();
-                foreach (var key in oldKeys)
-                {
-                    newModule.SymbolForwarding[uuidTranslationTable[key]] = uuidTranslationTable[newModule.SymbolForwarding[key]];
-                    newModule.SymbolForwarding.Remove(key);
-                }
+            //    oldKeys = newModule.SymbolForwarding.Keys.ToArray();
+            //    foreach (var key in oldKeys)
+            //    {
+            //        newModule.SymbolForwarding[uuidTranslationTable[key]] = uuidTranslationTable[newModule.SymbolForwarding[key]];
+            //        newModule.SymbolForwarding.Remove(key);
+            //    }
 
-                oldKeys = newModule.FunctionNames.Keys.ToArray();
-                foreach (var key in oldKeys)
-                {
-                    newModule.FunctionNames[uuidTranslationTable[key]] = uuidTranslationTable[newModule.FunctionNames[key]];
-                    newModule.FunctionNames.Remove(key);
-                }
+            //    oldKeys = newModule.FunctionNames.Keys.ToArray();
+            //    foreach (var key in oldKeys)
+            //    {
+            //        newModule.FunctionNames[uuidTranslationTable[key]] = uuidTranslationTable[newModule.FunctionNames[key]];
+            //        newModule.FunctionNames.Remove(key);
+            //    }
 
-                // These keys don't seem to exist.
-                oldKeys = newModule.FunctionBlocks.Keys.ToArray();
-                foreach (var key in oldKeys)
-                {
-                    if (uuidTranslationTable.ContainsKey(key))
-                    {
-                        newModule.FunctionBlocks[uuidTranslationTable[key]] = new System.Collections.ObjectModel.ObservableCollection<Guid>(newModule.FunctionBlocks[key].Select(oldId => uuidTranslationTable[oldId]));
-                        newModule.FunctionBlocks.Remove(key);
-                    }
-                }
+            //    // These keys don't seem to exist.
+            //    oldKeys = newModule.FunctionBlocks.Keys.ToArray();
+            //    foreach (var key in oldKeys)
+            //    {
+            //        if (uuidTranslationTable.ContainsKey(key))
+            //        {
+            //            newModule.FunctionBlocks[uuidTranslationTable[key]] = new System.Collections.ObjectModel.ObservableCollection<Guid>(newModule.FunctionBlocks[key].Select(oldId => uuidTranslationTable[oldId]));
+            //            newModule.FunctionBlocks.Remove(key);
+            //        }
+            //    }
 
-                // These keys don't seem to exist.
-                oldKeys = newModule.FunctionEntries.Keys.ToArray();
-                foreach (var key in oldKeys)
-                {
-                    if (uuidTranslationTable.ContainsKey(key))
-                    {
-                        newModule.FunctionEntries[uuidTranslationTable[key]] = new System.Collections.ObjectModel.ObservableCollection<Guid>(newModule.FunctionEntries[key].Select(oldId => uuidTranslationTable[oldId]));
-                        newModule.FunctionEntries.Remove(key);
-                    }
-                }
-            }
+            //    // These keys don't seem to exist.
+            //    oldKeys = newModule.FunctionEntries.Keys.ToArray();
+            //    foreach (var key in oldKeys)
+            //    {
+            //        if (uuidTranslationTable.ContainsKey(key))
+            //        {
+            //            newModule.FunctionEntries[uuidTranslationTable[key]] = new System.Collections.ObjectModel.ObservableCollection<Guid>(newModule.FunctionEntries[key].Select(oldId => uuidTranslationTable[oldId]));
+            //            newModule.FunctionEntries.Remove(key);
+            //        }
+            //    }
+            //}
 
 
             newIR.NodeCount().Should().Be(oldIR.NodeCount());

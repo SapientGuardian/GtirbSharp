@@ -14,8 +14,8 @@ namespace GtirbSharp
         /// </summary>
         public static IDictionary<Guid, ulong> Alignment(this AuxData auxData)
         {
-            const string typeName = "alignment";
-            return SerializedDictionaryGuidUlong(auxData, typeName);
+            const string keyName = "alignment";
+            return SerializedDictionaryGuidUlong(auxData, keyName);
         }
 
         /// <summary>
@@ -23,8 +23,8 @@ namespace GtirbSharp
         /// </summary>
         public static IDictionary<Guid, string> Types(this AuxData auxData)
         {
-            const string typeName = "types";
-            return SerializedDictionaryGuidString(auxData, typeName);
+            const string keyName = "types";
+            return SerializedDictionaryGuidString(auxData, keyName);
 
         }
 
@@ -33,8 +33,8 @@ namespace GtirbSharp
         /// </summary>
         public static IDictionary<Guid, Guid> SymbolForwarding(this AuxData auxData)
         {
-            const string typeName = "symbolForwarding";
-            return SerializedDictionaryGuidGuid(auxData, typeName);
+            const string keyName = "symbolForwarding";
+            return SerializedDictionaryGuidGuid(auxData, keyName);
         }
 
 
@@ -43,8 +43,8 @@ namespace GtirbSharp
         /// </summary>
         public static IDictionary<ulong, ulong> Padding(this AuxData auxData)
         {
-            const string typeName = "padding";
-            return SerializedDictionaryUlongUlong(auxData, typeName);
+            const string keyName = "padding";
+            return SerializedDictionaryUlongUlong(auxData, keyName);
         }
 
         /// <summary>
@@ -52,8 +52,8 @@ namespace GtirbSharp
         /// </summary>
         public static IDictionary<Offset, string> Comments(this AuxData auxData)
         {
-            const string typeName = "comments";
-            return SerializedDictionaryOffsetString(auxData, typeName);
+            const string keyName = "comments";
+            return SerializedDictionaryOffsetString(auxData, keyName);
         }
 
         /// <summary>
@@ -61,8 +61,8 @@ namespace GtirbSharp
         /// </summary>
         public static IDictionary<Guid, ObservableCollection<Guid>> FunctionBlocks(this AuxData auxData)
         {
-            const string typeName = "functionBlocks";
-            return SerializedDictionaryGuidGuids(auxData, typeName);
+            const string keyName = "functionBlocks";
+            return SerializedDictionaryGuidGuids(auxData, keyName);
         }
 
         /// <summary>
@@ -70,8 +70,8 @@ namespace GtirbSharp
         /// </summary>
         public static IDictionary<Guid, ObservableCollection<Guid>> FunctionEntries(this AuxData auxData)
         {
-            const string typeName = "functionEntries";
-            return SerializedDictionaryGuidGuids(auxData, typeName);
+            const string keyName = "functionEntries";
+            return SerializedDictionaryGuidGuids(auxData, keyName);
         }
 
         /// <summary>
@@ -79,52 +79,52 @@ namespace GtirbSharp
         /// </summary>
         public static IDictionary<Guid, Guid> FunctionNames(this AuxData auxData)
         {
-            const string typeName = "functionNames";
-            return SerializedDictionaryGuidGuid(auxData, typeName);
+            const string keyName = "functionNames";
+            return SerializedDictionaryGuidGuid(auxData, keyName);
         }
         public static IDictionary<Guid, ulong> SCCs(this AuxData auxData)
         {
             // TODO: Add a description and link to a scope
-            const string typeName = "SCCs";
-            return SerializedDictionaryGuidUlong(auxData, typeName);
+            const string keyName = "SCCs";
+            return SerializedDictionaryGuidUlong(auxData, keyName);
         }
 
         public static IDictionary<Guid, string> Encodings(this AuxData auxData)
         {
             // TODO: Add a description and link to a scope
-            const string typeName = "encodings";
-            return SerializedDictionaryGuidString(auxData, typeName);
+            const string keyName = "encodings";
+            return SerializedDictionaryGuidString(auxData, keyName);
         }
 
         public static IList<string> BinaryType(this AuxData auxData)
         {
             // TODO: Add a description and link to a scope
-            const string typeName = "binaryType";
-            return SerializedStringList(auxData, typeName);
+            const string keyName = "binaryType";
+            return SerializedStringList(auxData, keyName);
         }
 
         public static IList<string> Libraries(this AuxData auxData)
         {
             // TODO: Add a description and link to a scope
-            const string typeName = "libraries";
-            return SerializedStringList(auxData, typeName);
+            const string keyName = "libraries";
+            return SerializedStringList(auxData, keyName);
         }
 
         public static IList<string> LibraryPaths(this AuxData auxData)
         {
             // TODO: Add a description and link to a scope
-            const string typeName = "libraryPaths";
-            return SerializedStringList(auxData, typeName);
+            const string keyName = "libraryPaths";
+            return SerializedStringList(auxData, keyName);
         }
 
         public static IDictionary<Guid, ObservableCollection<long>> ElfSectionProperties(this AuxData auxData)
         {
             // TODO: Add a description and link to a scope
-            const string typeName = "elfSectionProperties";
+            const string keyName = "elfSectionProperties";
             var valueDict = new Dictionary<Guid, ObservableCollection<long>>();
-            if (auxData.TryGetRaw(typeName, out var protoObjData) && protoObjData != null)
+            if (auxData.TryGet(keyName, out var protoObjData) && protoObjData?.Data != null)
             {
-                var serialization = new Serialization(protoObjData);
+                var serialization = new Serialization(protoObjData.Data);
                 var numPairs = serialization.GetLong();
 
                 for (int i = 0; i < numPairs; i++)
@@ -137,17 +137,17 @@ namespace GtirbSharp
                 }
 
             }
-            return new SerializedDictionaryGuidSectionProperties(d => auxData.SetRaw(typeName, d), valueDict);
+            return new SerializedDictionaryGuidSectionProperties(d => auxData.Set(keyName, new AuxDataItem(null, d)), valueDict);
         }
 
         public static IDictionary<Offset, ObservableCollection<Directive>> CfiDirectives(this AuxData auxData)
         {
             // TODO: Add a description and link to a scope
-            const string typeName = "cfiDirectives";
+            const string keyName = "cfiDirectives";
             var valueDict = new Dictionary<Offset, ObservableCollection<Directive>>();
-            if (auxData.TryGetRaw(typeName, out var protoObjData) && protoObjData != null)
+            if (auxData.TryGet(keyName, out var protoObjData) && protoObjData?.Data != null)
             {
-                var serialization = new Serialization(protoObjData);
+                var serialization = new Serialization(protoObjData.Data);
                 var numPairs = serialization.GetLong();
 
                 for (int i = 0; i < numPairs; i++)
@@ -183,17 +183,17 @@ namespace GtirbSharp
                 }
 
             }
-            return new SerializedDictionaryOffsetDirectives(d => auxData.SetRaw(typeName, d), valueDict);
+            return new SerializedDictionaryOffsetDirectives(d => auxData.Set(keyName, new AuxDataItem(null, d)), valueDict);
         }
 
 
 
-        private static IDictionary<Guid, ulong> SerializedDictionaryGuidUlong(AuxData auxData, string typeName)
+        private static IDictionary<Guid, ulong> SerializedDictionaryGuidUlong(AuxData auxData, string keyName)
         {
             var valueDict = new Dictionary<Guid, ulong>();
-            if (auxData.TryGetRaw(typeName, out var protoObjData) && protoObjData != null)
+            if (auxData.TryGet(keyName, out var protoObjData) && protoObjData?.Data != null)
             {
-                var serialization = new Serialization(protoObjData);
+                var serialization = new Serialization(protoObjData.Data);
                 var numPairs = serialization.GetLong();
 
                 for (uint i = 0; i < numPairs; i++)
@@ -206,16 +206,16 @@ namespace GtirbSharp
             }
             return new SerializedDictionaryGuidULong(d =>
             {
-                auxData.SetRaw(typeName, d);
+                auxData.Set(keyName, new AuxDataItem(null, d));
             }, valueDict);
         }
 
-        private static IDictionary<Guid, string> SerializedDictionaryGuidString(AuxData auxData, string typeName)
+        private static IDictionary<Guid, string> SerializedDictionaryGuidString(AuxData auxData, string keyName)
         {
             var valueDict = new Dictionary<Guid, string>();
-            if (auxData.TryGetRaw(typeName, out var protoObjData) && protoObjData != null)
+            if (auxData.TryGet(keyName, out var protoObjData) && protoObjData?.Data != null)
             {
-                var serialization = new Serialization(protoObjData);
+                var serialization = new Serialization(protoObjData.Data);
                 var numPairs = serialization.GetLong();
 
                 for (int i = 0; i < numPairs; i++)
@@ -226,15 +226,15 @@ namespace GtirbSharp
                 }
 
             }
-            return new SerializedDictionaryGuidString(d => auxData.SetRaw(typeName, d), valueDict);
+            return new SerializedDictionaryGuidString(d => auxData.Set(keyName, new AuxDataItem(null, d)), valueDict);
         }
 
-        private static IDictionary<Guid, Guid> SerializedDictionaryGuidGuid(AuxData auxData, string typeName)
+        private static IDictionary<Guid, Guid> SerializedDictionaryGuidGuid(AuxData auxData, string keyName)
         {
             var valueDict = new Dictionary<Guid, Guid>();
-            if (auxData.TryGetRaw(typeName, out var protoObjData) && protoObjData != null)
+            if (auxData.TryGet(keyName, out var protoObjData) && protoObjData?.Data != null)
             {
-                var serialization = new Serialization(protoObjData);
+                var serialization = new Serialization(protoObjData.Data);
                 var numPairs = serialization.GetLong();
 
                 for (int i = 0; i < numPairs; i++)
@@ -245,15 +245,15 @@ namespace GtirbSharp
                 }
 
             }
-            return new SerializedDictionaryGuidGuid(d => auxData.SetRaw(typeName, d), valueDict);
+            return new SerializedDictionaryGuidGuid(d => auxData.Set(keyName, new AuxDataItem(null, d)), valueDict);
         }
 
-        private static IDictionary<ulong, ulong> SerializedDictionaryUlongUlong(AuxData auxData, string typeName)
+        private static IDictionary<ulong, ulong> SerializedDictionaryUlongUlong(AuxData auxData, string keyName)
         {
             var valueDict = new Dictionary<ulong, ulong>();
-            if (auxData.TryGetRaw(typeName, out var protoObjData) && protoObjData != null)
+            if (auxData.TryGet(keyName, out var protoObjData) && protoObjData?.Data != null)
             {
-                var serialization = new Serialization(protoObjData);
+                var serialization = new Serialization(protoObjData.Data);
                 var numPairs = serialization.GetLong();
 
                 for (int i = 0; i < numPairs; i++)
@@ -264,15 +264,15 @@ namespace GtirbSharp
                 }
 
             }
-            return new SerializedDictionaryULongULong(d => auxData.SetRaw(typeName, d), valueDict);
+            return new SerializedDictionaryULongULong(d => auxData.Set(keyName, new AuxDataItem(null, d)), valueDict);
         }
 
-        private static IDictionary<Offset, string> SerializedDictionaryOffsetString(AuxData auxData, string typeName)
+        private static IDictionary<Offset, string> SerializedDictionaryOffsetString(AuxData auxData, string keyName)
         {
             var valueDict = new Dictionary<Offset, string>();
-            if (auxData.TryGetRaw(typeName, out var protoObjData) && protoObjData != null)
+            if (auxData.TryGet(keyName, out var protoObjData) && protoObjData?.Data != null)
             {
-                var serialization = new Serialization(protoObjData);
+                var serialization = new Serialization(protoObjData.Data);
                 var numPairs = serialization.GetLong();
 
                 for (int i = 0; i < numPairs; i++)
@@ -285,15 +285,15 @@ namespace GtirbSharp
                 }
 
             }
-            return new SerializedDictionaryOffsetString(d => auxData.SetRaw(typeName, d), valueDict);
+            return new SerializedDictionaryOffsetString(d => auxData.Set(keyName, new AuxDataItem(null, d)), valueDict);
         }
 
-        private static IDictionary<Guid, ObservableCollection<Guid>> SerializedDictionaryGuidGuids(AuxData auxData, string typeName)
+        private static IDictionary<Guid, ObservableCollection<Guid>> SerializedDictionaryGuidGuids(AuxData auxData, string keyName)
         {
             var valueDict = new Dictionary<Guid, ObservableCollection<Guid>>();
-            if (auxData.TryGetRaw(typeName, out var protoObjData) && protoObjData != null)
+            if (auxData.TryGet(keyName, out var protoObjData) && protoObjData?.Data != null)
             {
-                var serialization = new Serialization(protoObjData);
+                var serialization = new Serialization(protoObjData.Data);
                 var numPairs = serialization.GetLong();
 
                 for (int i = 0; i < numPairs; i++)
@@ -310,15 +310,15 @@ namespace GtirbSharp
                 }
 
             }
-            return new SerializedDictionaryGuidGuids(d => auxData.SetRaw(typeName, d), valueDict);
+            return new SerializedDictionaryGuidGuids(d => auxData.Set(keyName, new AuxDataItem(null, d)), valueDict);
         }        
 
-        private static IList<string> SerializedStringList(AuxData auxData, string typeName)
+        private static IList<string> SerializedStringList(AuxData auxData, string keyName)
         {
             var valueList = new List<string>();
-            if (auxData.TryGetRaw(typeName, out var protoObjData) && protoObjData != null)
+            if (auxData.TryGet(keyName, out var protoObjData) && protoObjData?.Data != null)
             {
-                var serialization = new Serialization(protoObjData);
+                var serialization = new Serialization(protoObjData.Data);
                 var numValues = serialization.GetLong();
 
                 for (int i = 0; i < numValues; i++)
@@ -328,7 +328,7 @@ namespace GtirbSharp
                 }
 
             }
-            return new SerializedStringList(d => auxData.SetRaw(typeName, d), valueList);
+            return new SerializedStringList(d => auxData.Set(keyName, new AuxDataItem(null, d)), valueList);
         }
 
     }
