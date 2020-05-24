@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\gtirbsharp\GtirbSharp.csproj" />
+    <ProjectReference Include="..\GtirbSharp\GtirbSharp.csproj" />
   </ItemGroup>
 
   <ItemGroup>
