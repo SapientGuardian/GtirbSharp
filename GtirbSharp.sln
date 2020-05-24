@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30011.22
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GtirbSharp", "gtirbsharp\GtirbSharp.csproj", "{FBBED1B2-4CB0-402A-A630-DCA45AEDCB6D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GtirbSharp", "GtirbSharp\GtirbSharp.csproj", "{FBBED1B2-4CB0-402A-A630-DCA45AEDCB6D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitrbSharp.Tests", "gitrbsharp.tests\GitrbSharp.Tests.csproj", "{B7049578-2954-4CAD-9F1C-087F6ECB5118}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GitrbSharp.Tests", "GitrbSharp.Tests\GitrbSharp.Tests.csproj", "{B7049578-2954-4CAD-9F1C-087F6ECB5118}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
