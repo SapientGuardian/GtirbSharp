@@ -10,7 +10,7 @@ namespace GtirbSharp
     /// <summary>
     /// A DataBlock represents a data object, possibly symbolic.
     /// </summary>
-    public sealed class DataBlock : Block
+    public sealed class DataBlock : Block, IByteBlock
     {
         private readonly proto.DataBlock protoObj;
         private ByteInterval? byteInterval;

@@ -9,21 +9,6 @@ namespace GtirbSharp
     /// </summary>
     public abstract class SymbolicExpression
     {
-        /// <summary>
-        /// Constant offset
-        /// </summary>
-        public ulong Offset
-        {
-            get => GetOffset(); set => SetOffset(GetOffset(), value);
-        }
-        internal event EventHandler<ulong>? OffsetChanged;
-
-        protected abstract ulong GetOffset();
-        protected virtual void SetOffset(ulong oldValue, ulong newValue)
-        {
-            var handler = OffsetChanged;
-            handler?.Invoke(this, oldValue);
-        }
         internal SymbolicExpression()
         {
 

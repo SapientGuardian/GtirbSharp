@@ -111,7 +111,7 @@ namespace GtirbSharp
         /// <summary>
         /// A mapping from an offset in the interval to a SymbolicExpression in the interval
         /// </summary>
-        public ICollection<SymbolicExpression> SymbolicExpressions { get; private set; }
+        public IDictionary<ulong, SymbolicExpression> SymbolicExpressions { get; private set; }
 
         /// <summary>
         /// Construct a new ByteInterval with an owning Section

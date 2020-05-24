@@ -12,17 +12,20 @@ namespace GtirbSharp
     {
         internal readonly proto.SymStackConst protoObj;
 
-        protected override ulong GetOffset() => (ulong)protoObj.Offset;
-        protected override void SetOffset(ulong oldValue, ulong newValue) { protoObj.Offset = (int)newValue; base.SetOffset(oldValue, newValue); }
         /// <summary>
         /// UUID of a Symbol representing a stack variable
         /// </summary>
         public Guid? SymbolUuid { get => protoObj.SymbolUuid == null? (Guid?)null : GuidFactory.FromBigEndianByteArray(protoObj.SymbolUuid); set => protoObj.SymbolUuid = value == null? null : value.Value.ToBigEndianByteArray(); }
 
         /// <summary>
+        /// Constant offset
+        /// </summary>
+        public int Offset { get => protoObj.Offset; set => protoObj.Offset = value; }
+
+        /// <summary>
         /// Construct a new SymStackConst
         /// </summary>
-        public SymStackConst() : this(new proto.SymStackConst())
+        public SymStackConst(int offset) : this(new proto.SymStackConst() { Offset = offset })
         {
 
         }

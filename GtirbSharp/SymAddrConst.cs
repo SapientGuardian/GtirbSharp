@@ -12,17 +12,20 @@ namespace GtirbSharp
     {
         internal readonly proto.SymAddrConst protoObj;
 
-        protected override ulong GetOffset() => (ulong)protoObj.Offset;
-        protected override void SetOffset(ulong oldValue, ulong newValue) { protoObj.Offset = (long)newValue; base.SetOffset(oldValue, newValue); }
         /// <summary>
         /// UUID of a Symbol representing an address
         /// </summary>
         public Guid? SymbolUuid { get => protoObj.SymbolUuid == null? (Guid?)null : GuidFactory.FromBigEndianByteArray(protoObj.SymbolUuid); set => protoObj.SymbolUuid = value == null? null : value.Value.ToBigEndianByteArray(); }
 
         /// <summary>
+        /// Constant offset
+        /// </summary>
+        public long Offset { get => protoObj.Offset; set => protoObj.Offset = value; }
+
+        /// <summary>
         /// Construct a new SymAddrConst
         /// </summary>
-        public SymAddrConst() : this(new proto.SymAddrConst())
+        public SymAddrConst(long offset) : this(new proto.SymAddrConst() { Offset = offset })
         {
 
         }

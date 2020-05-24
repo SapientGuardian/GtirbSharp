@@ -10,7 +10,7 @@ namespace GtirbSharp
     /// <summary>
     /// A CodeBlock represents a basic block in the binary.
     /// </summary>
-    public sealed class CodeBlock : Block
+    public sealed class CodeBlock : Block, IByteBlock
     {
         private readonly proto.CodeBlock protoObj;
         private ByteInterval? byteInterval;

@@ -16,8 +16,7 @@ namespace GtirbSharp
         /// Constant scale factor
         /// </summary>
         public long Scale { get => protoObj.Scale; set => protoObj.Scale = value; }
-        protected override ulong GetOffset() => (ulong)protoObj.Offset;
-        protected override void SetOffset(ulong oldValue, ulong newValue) { protoObj.Offset = (long)newValue; base.SetOffset(oldValue, newValue); }
+
         /// <summary>
         /// Symbol representing the base address
         /// </summary>
@@ -28,9 +27,14 @@ namespace GtirbSharp
         public Guid? Symbol2Uuid { get => protoObj.Symbol2Uuid == null ? (Guid?)null : GuidFactory.FromBigEndianByteArray(protoObj.Symbol2Uuid); set => protoObj.Symbol2Uuid = value == null ? null : value.Value.ToBigEndianByteArray(); }
 
         /// <summary>
+        /// Constant offset
+        /// </summary>
+        public long Offset { get => protoObj.Offset; set => protoObj.Offset = value; }
+
+        /// <summary>
         /// Construct a new SymAddrAddr
         /// </summary>
-        public SymAddrAddr() : this(new proto.SymAddrAddr())
+        public SymAddrAddr(long offset) : this(new proto.SymAddrAddr() { Offset = offset })
         {
 
         }

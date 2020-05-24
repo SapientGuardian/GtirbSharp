@@ -8,26 +8,16 @@ using GtirbSharp.Extensions;
 
 namespace GitrbSharp.Tests
 {
-    public class BlockExtensionTests
+    public class ByteBlockExtensionsTests
     {
         [Fact]
-        public void CalculatesAddressOfCodeBlock()
+        public void CalculatesAddressOfByteBlock()
         {
             var interval = new ByteInterval((Section)null);
             var block = new CodeBlock(interval);
             interval.Address = 10;
             block.Offset = 5;
             block.Address().Should().Be(15);
-        }
-
-        [Fact]
-        public void CalculatesAddressOfDataBlock()
-        {
-            var interval = new ByteInterval((Section)null);
-            var block = new DataBlock(interval);
-            interval.Address = 10;
-            block.Offset = 5;
-            block.Address().Should().Be(15);
-        }
+        }       
     }
 }
