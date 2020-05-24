@@ -28,6 +28,9 @@
     <None Update="Resources\test1.gtirb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Resources\test2.gtirb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Resources\testIr.gtirb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
