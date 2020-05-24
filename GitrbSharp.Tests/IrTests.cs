@@ -13,18 +13,21 @@ namespace GitrbSharp.Tests
         [Fact]
         public void LoadFileWithoutException()
         {
-            using (var fs = new FileStream(@"Resources\testIr.gtirb", FileMode.Open))
+            using (var fs = new FileStream(Path.Combine("Resources", "testIr.gtirb"), FileMode.Open))
             {
                 var ir = IR.LoadFromStream(fs);
                 Assert.True(true);
             }
         }
 
-        [Fact]
-        public void DeepCopy()
+        [Theory]
+        [InlineData("test1.gtirb")]
+        [InlineData("test2.gtirb")]
+        [InlineData("testIr.gtirb")]
+        public void DeepCopy(string testFile)
         {
             IR oldIR;
-            using (var fs = new FileStream(@"Resources\test1.gtirb", FileMode.Open))
+            using (var fs = new FileStream(Path.Combine("Resources", testFile), FileMode.Open))
             {
                 oldIR = IR.LoadFromStream(fs);
             }
@@ -240,7 +243,7 @@ namespace GitrbSharp.Tests
 
             newIR.NodeCount().Should().Be(oldIR.NodeCount());
             newIR.Cfg.Edges.Count.Should().Be(oldIR.Cfg.Edges.Count);
-            newIR.Cfg.Vertices.Count.Should().Be(oldIR.Cfg.Vertices.Count);     
+            newIR.Cfg.Vertices.Count.Should().Be(oldIR.Cfg.Vertices.Count);
 
             var ms1 = new MemoryStream();
             var ms2 = new MemoryStream();
