@@ -6,14 +6,25 @@
     <Nullable>enable</Nullable>
     <RootNamespace>GtirbSharp</RootNamespace>
     <AssemblyName>GtirbSharp</AssemblyName>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>0.1.0</Version>
+    <Authors>Noah Potash</Authors>
+    <Company>OutbreakLabs</Company>
+    <Description>.NET library for the GTIRB format (https://github.com/GrammaTech/gtirb)</Description>
+    <RepositoryUrl>https://github.com/SapientGuardian/GtirbSharp</RepositoryUrl>
+    <PackageTags>gtirb</PackageTags>
+    <PackageLicenseUrl>http://opensource.org/licenses/MIT</PackageLicenseUrl>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
   </PropertyGroup>
  
   
   <ItemGroup>
-    <!--<PackageReference Include="protobuf-net.MSBuild" Version="2.3.17" />-->
     <PackageReference Include="Nito.Guids" Version="1.0.0" />
     <PackageReference Include="protobuf-net" Version="2.4.6" />
     <PackageReference Include="System.Collections.Immutable" Version="1.7.1" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
   </ItemGroup>
 
 </Project>
